@@ -1,53 +1,35 @@
 <template>
     <div class="background">
-        <v-container class='ma-auto'>
-            <v-row>
-                <v-col cols='9'>
-                    <v-card
-                        class="tmp"
-                    >
-                        <router-link class='white-text' to="/">Home</router-link> |
-                        <router-link class='white-text' to="/register">register</router-link> |
-                        <router-link class='white-text' to="/login">login</router-link>
-                        <router-view/>
-                    </v-card>
-                </v-col>
-            </v-row>
+        <v-container class='mx-auto mt-10' style='max-width: 700px'>
+            <v-card-title class='py-0 pr-3' style='color: var(--sn-main-blue)'>
+                {{title}}
+            </v-card-title>
+            <v-card class="main-card py-5 px-8">
+                <router-view />
+            </v-card>
         </v-container>
 
-
-
-
-<!--        <div class="row">
-            <div class="col s4 offset-s4">
-                <h4 class='tmp'>Вход</h4>
-                <div class="card blue white-text">
-
-                </div>
-            </div>
-        </div>-->
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { Navbar } from '../components';
-@Component({
-    components: {
-        Navbar,
-    },
-})
-export default class UnauthorizedLayout extends Vue {}
+@Component
+export default class UnauthorizedLayout extends Vue {
+    get title(): string {
+        return (this.$route.path === '/login') ? 'Авторизация' : 'Регистрация'
+    }
+}
 </script>
 
-<style scoped>
+<style scoped lang='scss'>
 .background {
-    background-color: var(--unauthorized-theme);
+    background-color: var(--sn-unauthorized-theme);
     height: 100vh;
 }
 
-/*.tmp {
-    color: #2196f3;
-    width: 500px;
-}*/
+.main-card {
+    background: var(--sn-main-blue);
+    color: white;
+}
 </style>

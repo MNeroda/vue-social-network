@@ -1,5 +1,7 @@
 <template>
-    <component :is="layout"> </component>
+    <v-app>
+        <component :is="layout"> </component>
+    </v-app>
 </template>
 
 <script lang="ts">
