@@ -7,8 +7,8 @@
         <v-text-field
             v-model="form.email"
             class="login-page-text-field"
+            validate-on-blur
             outlined
-            color="white"
             placeholder="Введите email"
             :rules="emailRules"
         >
@@ -21,6 +21,7 @@
             v-model="form.password"
             type="password"
             class="login-page-text-field"
+            validate-on-blur
             outlined
             color="white"
             placeholder="Введите пароль"
@@ -43,7 +44,7 @@
             style="background-color: var(--sn-main-grey)"
             @click="$router.push('/register')"
         >
-            Регистрация</v-btn
+            Создать профиль</v-btn
         >
     </v-form>
 </template>
@@ -82,18 +83,15 @@ export default class LoginPage extends Vue {
 }
 </script>
 
-<style>
-.login-page-text-field .v-text-field__slot input {
-    color: white !important;
+<style >
+.login-page-text-field:not(.error--text) .v-text-field__slot input {
+    color: white!important;
 }
-.login-page-text-field .v-input__slot fieldset {
-    border-color: white !important;
+.login-page-text-field:not(.error--text) .v-input__slot fieldset {
+    border-color: white!important;
 }
-/*
-.error--text * {
-    color: yellow!important;
+
+.login-page-text-field.error--text *{
+    color: var(--sn-main-red)!important;
 }
-.error--text * {
-    border-color: yellow!important;
-}*/
 </style>

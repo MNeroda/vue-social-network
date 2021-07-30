@@ -3,11 +3,12 @@
         v-model="isValid"
         class="white--text"
         @submit.prevent="submitHandler"
-        ref="form"
+        ref="formRef"
     >
         <v-text-field
             v-model="form.email"
-            class="login-page-text-field"
+            class="register-page-text-field"
+            validate-on-blur
             outlined
             color="white"
             placeholder="Введите email"
@@ -17,11 +18,25 @@
                 <span class="white--text">Email</span>
             </template>
         </v-text-field>
+        <v-text-field
+            v-model="form.name"
+            class="register-page-text-field"
+            validate-on-blur
+            outlined
+            color="white"
+            placeholder="Введите имя"
+            :rules="nameRules"
+        >
+            <template v-slot:label class="white--text">
+                <span class="white--text">Имя</span>
+            </template>
+        </v-text-field>
 
         <v-text-field
             v-model="form.password"
             type="password"
-            class="login-page-text-field"
+            class="register-page-text-field"
+            validate-on-blur
             outlined
             color="white"
             placeholder="Введите пароль"
@@ -36,7 +51,7 @@
         <v-text-field
             v-model="repeatPassword"
             type="password"
-            class="login-page-text-field"
+            class="register-page-text-field"
             outlined
             color="white"
             placeholder="Введите пароль"
@@ -46,19 +61,33 @@
             </template>
         </v-text-field>
 
-        <v-btn
-            class="ma-1 white--text"
-            style="background-color: var(--sn-main-orange)"
-            type="submit"
+        <v-text-field
+            v-model="form.phone"
+            type="text"
+            class="register-page-text-field"
+            validate-on-blur
+            outlined
+            color="white"
+            placeholder="Введите телефон"
+            hint="(необязательно)"
+            v-mask="'+7 (###) ###-##-##'"
+            :rules="phoneRules"
         >
-            Войти
-        </v-btn>
+            <template v-slot:label class="white--text">
+                <span class="white--text">Телефон(необязательно)</span>
+            </template>
+        </v-text-field>
 
         <v-btn
+            class="ma-1 white--text"
             style="background-color: var(--sn-main-grey)"
             @click="$router.push('/login')"
         >
-            Регистрация</v-btn
+            вернуться
+        </v-btn>
+
+        <v-btn style="background-color: var(--sn-main-orange)" type="submit">
+            Зарегестрироваться</v-btn
         >
     </v-form>
 </template>
@@ -66,21 +95,20 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { validators } from '@/modules/validators';
+import { VForm } from '@/types/VForm';
+import { IRegisterUser } from '@/types/user';
+import { AuthResource } from '@/recources/AuthResource';
 
-interface IFormRegister {
-    email: string;
-    password: string;
-    name: string;
-    phone?: string;
-}
+const authResource = new AuthResource();
 
 @Component
 export default class LoginPage extends Vue {
     isValid = false;
-    form: IFormRegister = {
+    form: IRegisterUser = {
         email: '',
         password: '',
         name: '',
+        phone: '',
     };
     repeatPassword = '';
 
@@ -99,8 +127,23 @@ export default class LoginPage extends Vue {
         ),
     ];
 
+    nameRules = [
+        validators.required('Необходимо ввести имя'),
+        //validators.minLength(2, 'Минимум 2 символа'),
+    ];
+
+    phoneRules = [validators.minLength(18, 'Укажите корректный телефон')];
+
+    get passwordRef(): VForm {
+        return this.$refs.passwordRef as VForm;
+    }
+
+    get formRef(): VForm {
+        return this.$refs.formRef as VForm;
+    }
+
     @Watch('repeatPassword')
-    handleChangeRepeatPassword() {
+    handleChangeRepeatPassword(): void {
         this.passwordRules.splice(
             this.passwordRules.length - 1,
             1,
@@ -109,28 +152,30 @@ export default class LoginPage extends Vue {
                 'Пароли должны совпадать'
             )
         );
-        if (this.$refs.passwordRef && this.$refs.passwordRef.validate()) this.$refs.passwordRef.validate()
+        this.passwordRef.validate();
     }
 
-    submitHandler() {
-        console.log(this.form);
-        console.log('isValid: ', this.isValid);
+    async submitHandler(): Promise<void> {
+        if (!this.isValid) {
+            this.formRef.validate();
+            return;
+        }
+
+        const data = await authResource.registerNewUser(this.form);
+        console.log(data);
     }
 }
 </script>
 
 <style>
-.login-page-text-field .v-text-field__slot input {
+.register-page-text-field:not(.error--text) .v-text-field__slot input {
     color: white !important;
 }
-.login-page-text-field .v-input__slot fieldset {
+.register-page-text-field:not(.error--text) .v-input__slot fieldset {
     border-color: white !important;
 }
-/*
-.error--text * {
-    color: yellow!important;
+
+.register-page-text-field.error--text * {
+    color: var(--sn-main-red) !important;
 }
-.error--text * {
-    border-color: yellow!important;
-}*/
 </style>

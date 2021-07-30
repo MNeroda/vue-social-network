@@ -1,5 +1,5 @@
 {
-  "port": 5000,
-  "MongoURI": "mongodb+srv://maksim:123456qwerty@cluster0.bgpbf.mongodb.net/users?retryWrites=true&w=majority",
-  "jwtSecret": "secretKey"
+    "port": 5000,
+    "MongoURI": "mongodb+srv://maksim:123456qwerty@cluster0.bgpbf.mongodb.net/database?retryWrites=true&w=majority",
+    "jwtSecret": "secretKey"
 }
