@@ -3,6 +3,7 @@
         v-model="isValid"
         class="white--text"
         @submit.prevent="submitHandler"
+        ref='formRef'
     >
         <v-text-field
             v-model="form.email"
@@ -36,6 +37,7 @@
             class="ma-1 white--text"
             style="background-color: var(--sn-main-orange)"
             type="submit"
+            :disabled='isLoading'
         >
             Войти
         </v-btn>
@@ -52,19 +54,28 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { validators } from '@/modules/validators';
+import { IFormLogin } from '@/types/user';
+import { mapActions } from 'vuex';
+import { ActionTypes } from '@/store/types';
+import { VForm } from '@/types/VForm';
 
-interface IFormLogin {
-    email: string;
-    password: string;
-}
 
-@Component
+@Component({
+    methods: {
+        ...mapActions({
+            login: ActionTypes.LOGIN
+        }),
+    }
+})
 export default class LoginPage extends Vue {
     isValid = false;
+    isLoading = false
     form: IFormLogin = {
         email: '',
         password: '',
     };
+
+    login!: (form: IFormLogin) => Promise<void>
 
     emailRules = [
         validators.required('Введите email'),
@@ -77,21 +88,32 @@ export default class LoginPage extends Vue {
         validators.minLength(6, 'Минимальная длина пароля 6 символов'),
     ];
 
-    submitHandler() {
-        console.log(this.form);
+    get formRef(): VForm {
+        return this.$refs.formRef as VForm;
+    }
+
+    async submitHandler() {
+        if (!this.isValid) {
+            this.formRef.validate();
+            return;
+        }
+        this.isLoading = true
+        await this.login(this.form)
+        this.isLoading = false
+        await this.$router.push('/')
     }
 }
 </script>
 
-<style >
+<style>
 .login-page-text-field:not(.error--text) .v-text-field__slot input {
-    color: white!important;
+    color: white !important;
 }
 .login-page-text-field:not(.error--text) .v-input__slot fieldset {
-    border-color: white!important;
+    border-color: white !important;
 }
 
-.login-page-text-field.error--text *{
-    color: var(--sn-main-red)!important;
+.login-page-text-field.error--text * {
+    color: var(--sn-main-red) !important;
 }
 </style>

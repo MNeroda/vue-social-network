@@ -4,3 +4,8 @@ export interface IRegisterUser {
     name: string;
     phone: string;
 }
+
+export interface IFormLogin {
+    email: string;
+    password: string;
+}

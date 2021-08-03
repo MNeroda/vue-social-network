@@ -97,12 +97,17 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import { validators } from '@/modules/validators';
 import { VForm } from '@/types/VForm';
 import { IRegisterUser } from '@/types/user';
-import { AuthResource } from '@/recources/AuthResource';
+import { mapActions } from 'vuex';
+import { ActionTypes } from '@/store/types';
 
-const authResource = new AuthResource();
-
-@Component
-export default class LoginPage extends Vue {
+@Component({
+    methods: {
+        ...mapActions({
+            register: ActionTypes.REGISTER,
+        }),
+    },
+})
+export default class RegisterPage extends Vue {
     isValid = false;
     form: IRegisterUser = {
         email: '',
@@ -111,6 +116,8 @@ export default class LoginPage extends Vue {
         phone: '',
     };
     repeatPassword = '';
+
+    register!: (form: IRegisterUser) => Promise<void>;
 
     emailRules = [
         validators.required('Введите email'),
@@ -129,7 +136,7 @@ export default class LoginPage extends Vue {
 
     nameRules = [
         validators.required('Необходимо ввести имя'),
-        //validators.minLength(2, 'Минимум 2 символа'),
+        validators.minLength(2, 'Минимум 2 символа'),
     ];
 
     phoneRules = [validators.minLength(18, 'Укажите корректный телефон')];
@@ -161,8 +168,7 @@ export default class LoginPage extends Vue {
             return;
         }
 
-        const data = await authResource.registerNewUser(this.form);
-        console.log(data);
+        await this.register(this.form);
     }
 }
 </script>

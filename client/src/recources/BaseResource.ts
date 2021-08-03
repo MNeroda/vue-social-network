@@ -7,6 +7,7 @@ export class BaseResource {
         this.axios = axios.create({
             withCredentials,
             baseURL,
+            responseType: 'json'
         });
     }
 }
