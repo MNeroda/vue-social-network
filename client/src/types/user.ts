@@ -1,4 +1,4 @@
-export interface IRegisterUser {
+export interface IFormRegister {
     email: string;
     password: string;
     name: string;

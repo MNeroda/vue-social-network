@@ -3,11 +3,11 @@ import router from './router';
 import store from './store';
 
 import vuetify from '@/plugins/vuetify';
-import '@/modules/directives/VMask'
+import '@/plugins/message.plugin';
+import '@/modules/directives/VMask';
 
 import App from './App.vue';
 Vue.config.productionTip = false;
-
 
 new Vue({
     router,

@@ -1,8 +1,10 @@
 const express = require('express');
 const config = require('config');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser')
 
 const app = express();
+app.use(cookieParser())
 
 app.use(express.json({ extended: true }));
 

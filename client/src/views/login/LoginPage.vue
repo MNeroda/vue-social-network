@@ -3,7 +3,7 @@
         v-model="isValid"
         class="white--text"
         @submit.prevent="submitHandler"
-        ref='formRef'
+        ref="formRef"
     >
         <v-text-field
             v-model="form.email"
@@ -37,7 +37,7 @@
             class="ma-1 white--text"
             style="background-color: var(--sn-main-orange)"
             type="submit"
-            :disabled='isLoading'
+            :disabled="isLoading"
         >
             Войти
         </v-btn>
@@ -48,6 +48,8 @@
         >
             Создать профиль</v-btn
         >
+
+        <v-btn @click="test">TEST</v-btn>
     </v-form>
 </template>
 
@@ -58,24 +60,26 @@ import { IFormLogin } from '@/types/user';
 import { mapActions } from 'vuex';
 import { ActionTypes } from '@/store/types';
 import { VForm } from '@/types/VForm';
+import { AuthResource } from '@/recources/AuthResource';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
-
+const authResource = new AuthResource();
 @Component({
     methods: {
         ...mapActions({
-            login: ActionTypes.LOGIN
+            login: ActionTypes.LOGIN,
         }),
-    }
+    },
 })
 export default class LoginPage extends Vue {
     isValid = false;
-    isLoading = false
+    isLoading = false;
     form: IFormLogin = {
         email: '',
         password: '',
     };
 
-    login!: (form: IFormLogin) => Promise<void>
+    login!: (form: IFormLogin) => Promise<void>;
 
     emailRules = [
         validators.required('Введите email'),
@@ -92,15 +96,22 @@ export default class LoginPage extends Vue {
         return this.$refs.formRef as VForm;
     }
 
+    async test() {
+        const fpPromise = await FingerprintJS.load();
+        const fingerPrint = await fpPromise.get();
+        const tmp = await authResource.test(fingerPrint.visitorId);
+        console.log(tmp);
+    }
+
     async submitHandler() {
         if (!this.isValid) {
             this.formRef.validate();
             return;
         }
-        this.isLoading = true
-        await this.login(this.form)
-        this.isLoading = false
-        await this.$router.push('/')
+        this.isLoading = true;
+        await this.login(this.form);
+        this.isLoading = false;
+        //await this.$router.push('/');
     }
 }
 </script>

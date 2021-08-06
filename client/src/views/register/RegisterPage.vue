@@ -96,7 +96,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { validators } from '@/modules/validators';
 import { VForm } from '@/types/VForm';
-import { IRegisterUser } from '@/types/user';
+import { IFormRegister } from '@/types/user';
 import { mapActions } from 'vuex';
 import { ActionTypes } from '@/store/types';
 
@@ -109,7 +109,7 @@ import { ActionTypes } from '@/store/types';
 })
 export default class RegisterPage extends Vue {
     isValid = false;
-    form: IRegisterUser = {
+    form: IFormRegister = {
         email: '',
         password: '',
         name: '',
@@ -117,7 +117,7 @@ export default class RegisterPage extends Vue {
     };
     repeatPassword = '';
 
-    register!: (form: IRegisterUser) => Promise<void>;
+    register!: (form: IFormRegister) => Promise<void>;
 
     emailRules = [
         validators.required('Введите email'),

@@ -1,13 +1,42 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const RefreshToken = require('../models/RefreshToken');
 const { check, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-const authMiddleware = require('../middleware/auth.middleware');
-
 const router = new Router();
+
+async function createRefreshToken(userId, fingerPrint) {
+    const refreshToken = jwt.sign({}, config.get('jwtSecret'), {
+        expiresIn: '60d',
+    });
+    const refreshTokenDecrypted = jwt.verify(
+        refreshToken,
+        config.get('jwtSecret')
+    );
+    const refreshTokenInBd = new RefreshToken({
+        userId,
+        refreshToken: refreshToken,
+        fingerPrint,
+        expiresIn: refreshTokenDecrypted.exp,
+    });
+    await refreshTokenInBd.save();
+    return refreshToken;
+}
+
+async function createAccessToken(userId) {
+    return jwt.sign({ userId }, config.get('jwtSecret'), { expiresIn: '20m' });
+}
+
+function setRefreshCookie(res, refreshToken) {
+    res.cookie('refresh_token', refreshToken, {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60),
+        /*expires = милисекунды * секунды * минуты * часы * дни*/
+        httpOnly: true,
+    });
+}
 
 router.post(
     '/register',
@@ -25,6 +54,7 @@ router.post(
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     message: 'Неверные данные при регистрации',
+                    messageType: 'error',
                     errors: errors.array(),
                 });
             }
@@ -33,9 +63,10 @@ router.post(
             const possibleUser = await User.findOne({ email });
 
             if (possibleUser) {
-                return res
-                    .status(400)
-                    .json({ message: 'Такой пользователь уже существует' });
+                return res.status(400).json({
+                    message: 'Такой пользователь уже существует',
+                    messageType: 'error',
+                });
             }
 
             const hashedPassword = await bcrypt.hash(password, 12);
@@ -47,20 +78,22 @@ router.post(
             });
             await user.save();
 
-
-            const token = jwt.sign(
-                { userId: user.id },
-                config.get('jwtSecret'),
-                {expiresIn: '1y'}
+            const refreshToken = await createRefreshToken(
+                user._id,
+                req.body.fingerPrint
             );
+            const accessToken = createAccessToken(user.id);
 
+            setRefreshCookie(res, refreshToken);
             return res.status(201).json({
+                accessToken,
                 message: 'Пользователь создан',
-                token,
-                userId: user._id,
+                messageType: 'success',
             });
         } catch (e) {
-            return res.status(500).json({ message: 'Серверная ошибка' });
+            return res
+                .status(500)
+                .json({ message: 'Серверная ошибка', messageType: 'error' });
         }
     }
 );
@@ -79,6 +112,7 @@ router.post(
                 return res.status(400).json({
                     errors: errors.array(),
                     message: 'Неверный логин или пароль',
+                    messageType: 'error',
                 });
             }
 
@@ -86,35 +120,81 @@ router.post(
             const user = await User.findOne({ email });
 
             if (!user) {
-                return res
-                    .status(400)
-                    .json({ message: 'Такого пользователя не существует' });
+                return res.status(400).json({
+                    message: 'Такого пользователя не существует',
+                    messageType: 'error',
+                });
             }
 
             const isMatch = await bcrypt.compare(password, user.password);
 
             if (!isMatch) {
-                return res.status(400).json({ message: 'Неверный пароль' });
+                return res
+                    .status(400)
+                    .json({ message: 'Неверный пароль', messageType: 'error' });
             }
+            //Удаление прошлых рефреш токенов
+            await RefreshToken.deleteMany({ userId: user._id });
 
-            const token = jwt.sign(
-                { userId: user.id },
-                config.get('jwtSecret'),
-                { expiresIn: '10h' }
+            const refreshToken = await createRefreshToken(
+                user._id,
+                req.body.fingerPrint
             );
+            const accessToken = createAccessToken(user.id);
 
-            res.status(200).json({ token, userId: user.id });
+            setRefreshCookie(res, refreshToken);
+
+            return res.status(200).json({
+                accessToken,
+                userId: user.id,
+                message: 'Вы успешно вошли в систему',
+                messageType: 'success',
+            });
         } catch (e) {}
     }
 );
 
-router.get('/check-auth', async (req, res) => {
+router.get('/test', async (req, res) => {
+    console.log(req.header);
+    return res.status(200).json({ message: 'test' });
+});
+
+router.get('/refresh-token', async (req, res) => {
     try {
-        const token = req.headers.authorization.split(' ')[1]
-        jwt.verify(token, config.get('jwtSecret'))
-        res.status(200).json({login: true})
+        const refreshTokenFromRequest = req.cookies['refresh_token'];
+        let tokenInBd = await RefreshToken.findOne({
+            refreshToken: refreshTokenFromRequest,
+        });
+        if (req.query.fingerPrint !== tokenInBd.fingerPrint) {
+            return res.status(401).json({
+                message:
+                    'Похоже вы зашли с другого браузера, попробуйте войти снова',
+                messageType: 'error',
+            });
+        }
+        if (tokenInBd.expiresIn * 1000 < Date.now()) {
+            return res.status(401).json({
+                message:
+                    'Срок действия вашей сессии истек, войдите в систему снова',
+                messageType: 'error',
+            });
+        }
+
+        const refreshToken = await createRefreshToken(
+            tokenInBd.userId,
+            tokenInBd.fingerPrint
+        );
+        const accessToken = await createAccessToken(tokenInBd.userId);
+
+        setRefreshCookie(res, refreshToken);
+        await RefreshToken.deleteMany({ userId: tokenInBd.userId });
+
+        return res.status(200).json({ accessToken });
     } catch (e) {
-        res.status(200).json({login: false})
+        res.status(401).json({
+            message: 'Ошибка доступа: перезайдите в систему',
+            messageType: 'error',
+        });
     }
 });
 

@@ -1,7 +1,13 @@
 import Vue, { VueConstructor } from 'vue';
 import VueRouter from 'vue-router';
 
-import { RegisterPage, LoginPage, HomePage } from '@/views';
+import {
+    RegisterPage,
+    LoginPage,
+    HomePage,
+    ChatPage,
+    ProfilePage,
+} from '@/views';
 import { AuthResource } from '@/recources/AuthResource';
 import store from '@/store';
 import { MutationTypes } from '@/store/types';
@@ -11,8 +17,10 @@ Vue.use(VueRouter);
 export enum RouteNames {
     LOGIN_PAGE = 'LOGIN_PAGE',
     REGISTER_PAGE = 'REGISTER_PAGE',
+    PAGE_404 = 'PAGE_404',
     HOME_PAGE = 'HOME_PAGE',
-    PAGE_404 = 'PAGE_404'
+    CHAT_PAGE = 'CHAT_PAGE',
+    PROFILE_PAGE = 'PROFILE_PAGE',
 }
 
 interface IMetaLayout {
@@ -29,12 +37,12 @@ interface IMetaLayout {
 const routes: Array<IMetaLayout> = [
     {
         path: '*',
-        name : RouteNames.PAGE_404,
+        name: RouteNames.PAGE_404,
         redirect: '/register',
         component: RegisterPage,
         meta: {
-            layout: 'unauthorized-layout'
-        }
+            layout: 'unauthorized-layout',
+        },
     },
     {
         path: '/login',
@@ -60,6 +68,22 @@ const routes: Array<IMetaLayout> = [
             auth: true,
         },
     },
+    {
+        path: '/chat',
+        name: RouteNames.CHAT_PAGE,
+        component: ChatPage,
+        meta: {
+            auth: true,
+        },
+    },
+    {
+        path: '/profile',
+        name: RouteNames.PROFILE_PAGE,
+        component: ProfilePage,
+        meta: {
+            auth: true
+        }
+    }
 ];
 
 const router = new VueRouter({
@@ -68,7 +92,7 @@ const router = new VueRouter({
     routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+/*router.beforeEach(async (to, from, next) => {
     const requireAuth = to.matched.some((record) => record.meta.auth);
     if (!requireAuth) return next();
 
@@ -80,9 +104,8 @@ router.beforeEach(async (to, from, next) => {
     if (isValidToken) return next();
 
     store.commit(MutationTypes.SET_TOKEN, '');
-    store.commit(MutationTypes.SET_USER_ID, '');
     localStorage.removeItem('token');
     return next('/login');
-});
+});*/
 
 export default router;
