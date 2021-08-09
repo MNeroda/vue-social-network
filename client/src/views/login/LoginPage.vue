@@ -48,8 +48,6 @@
         >
             Создать профиль</v-btn
         >
-
-        <v-btn @click="test">TEST</v-btn>
     </v-form>
 </template>
 
@@ -57,20 +55,10 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { validators } from '@/modules/validators';
 import { IFormLogin } from '@/types/user';
-import { mapActions } from 'vuex';
 import { ActionTypes } from '@/store/types';
 import { VForm } from '@/types/VForm';
-import { AuthResource } from '@/recources/AuthResource';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
-const authResource = new AuthResource();
-@Component({
-    methods: {
-        ...mapActions({
-            login: ActionTypes.LOGIN,
-        }),
-    },
-})
+@Component
 export default class LoginPage extends Vue {
     isValid = false;
     isLoading = false;
@@ -97,10 +85,7 @@ export default class LoginPage extends Vue {
     }
 
     async test() {
-        const fpPromise = await FingerprintJS.load();
-        const fingerPrint = await fpPromise.get();
-        const tmp = await authResource.test(fingerPrint.visitorId);
-        console.log(tmp);
+        await this.$store.dispatch(ActionTypes.REFRESH_TOKEN);
     }
 
     async submitHandler() {
@@ -109,9 +94,9 @@ export default class LoginPage extends Vue {
             return;
         }
         this.isLoading = true;
-        await this.login(this.form);
+        await this.$store.dispatch(ActionTypes.LOGIN, this.form);
         this.isLoading = false;
-        //await this.$router.push('/');
+        await this.$router.push('/');
     }
 }
 </script>

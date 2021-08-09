@@ -26,7 +26,7 @@ async function createRefreshToken(userId, fingerPrint) {
     return refreshToken;
 }
 
-async function createAccessToken(userId) {
+function createAccessToken(userId) {
     return jwt.sign({ userId }, config.get('jwtSecret'), { expiresIn: '20m' });
 }
 
@@ -179,7 +179,7 @@ router.get('/refresh-token', async (req, res) => {
                 messageType: 'error',
             });
         }
-
+        await RefreshToken.deleteMany({ userId: tokenInBd.userId });
         const refreshToken = await createRefreshToken(
             tokenInBd.userId,
             tokenInBd.fingerPrint
@@ -187,7 +187,6 @@ router.get('/refresh-token', async (req, res) => {
         const accessToken = await createAccessToken(tokenInBd.userId);
 
         setRefreshCookie(res, refreshToken);
-        await RefreshToken.deleteMany({ userId: tokenInBd.userId });
 
         return res.status(200).json({ accessToken });
     } catch (e) {
@@ -196,6 +195,20 @@ router.get('/refresh-token', async (req, res) => {
             messageType: 'error',
         });
     }
+});
+
+router.get('/logout', (req, res) => {
+    res.cookie('refresh_token', null, {
+        expires: new Date(0),
+        /*expires = милисекунды * секунды * минуты * часы * дни*/
+        httpOnly: true,
+    });
+    return res
+        .status(200)
+        .json({
+            message: 'Вы успешно вышли из системы',
+            messageType: 'success',
+        });
 });
 
 module.exports = router;

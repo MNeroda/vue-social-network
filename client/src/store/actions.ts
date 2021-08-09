@@ -29,12 +29,7 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
                 fingerPrint: fingerPrint.visitorId,
             });
             console.log(response);
-            commit(MutationTypes.SET_TOKEN, response.data.token);
-
-            await dispatch(
-                ActionTypes.SET_TOKEN_TO_LOCAL_STORAGE,
-                response.data.token
-            );
+            commit(MutationTypes.SET_TOKEN, response.data.accessToken);
         } catch (e) {
             console.log(e);
         }
@@ -51,17 +46,36 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
                 ...form,
                 fingerPrint: fingerPrint.visitorId,
             });
-            const tokenDecrypted = getDataFromJWT(response.data.token);
-            console.log(tokenDecrypted);
-            commit(MutationTypes.SET_TOKEN, response.data.token);
-
-            await dispatch(ActionTypes.SET_TOKEN_TO_LOCAL_STORAGE);
+            commit(MutationTypes.SET_TOKEN, response.data.accessToken);
         } catch (e) {
             console.log(e);
         }
     },
+    [ActionTypes.REFRESH_TOKEN]: async ({ commit, dispatch, state }) => {
+        try {
+            const fpPromise = await FingerprintJS.load();
+            const fingerPrint = await fpPromise.get();
+            const token = await authResource.refreshToken(
+                fingerPrint.visitorId
+            );
+            if (!token) return;
+            commit(MutationTypes.SET_TOKEN, token.data.accessToken);
+            const tokenData = getDataFromJWT(token.data.accessToken);
 
-    [ActionTypes.SET_TOKEN_TO_LOCAL_STORAGE]: (_, token: string) => {
-        localStorage.setItem('token', token);
+            //Когда закончится жизнь токена обновить его,
+            //делаю это заранее за 60 секунд, чтобы исключить проблемы
+            const resetTokenTimeout = setTimeout(() => {
+                dispatch(ActionTypes.REFRESH_TOKEN);
+            }, tokenData.exp * 1000 - Date.now() - 60000);
+            commit(MutationTypes.SET_PREV_TOKEN_TIMEOUT, resetTokenTimeout);
+        } catch (e) {
+            commit(MutationTypes.SET_TOKEN, '');
+        }
+    },
+
+    [ActionTypes.LOGOUT]: async ({ commit }) => {
+        commit(MutationTypes.SET_TOKEN, '');
+        commit(MutationTypes.SET_PREV_TOKEN_TIMEOUT, undefined);
+        await authResource.logout();
     },
 };

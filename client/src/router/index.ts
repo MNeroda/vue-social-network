@@ -1,16 +1,17 @@
-import Vue, { VueConstructor } from 'vue';
-import VueRouter from 'vue-router';
+import Vue from 'vue';
+import VueRouter, { RouteConfig } from 'vue-router';
 
 import {
     RegisterPage,
     LoginPage,
+    Page404,
     HomePage,
     ChatPage,
     ProfilePage,
 } from '@/views';
-import { AuthResource } from '@/recources/AuthResource';
 import store from '@/store';
-import { MutationTypes } from '@/store/types';
+import { ActionTypes } from '@/store/types';
+import { getDataFromJWT } from '@/modules/helpers/JWTHelper';
 
 Vue.use(VueRouter);
 
@@ -23,23 +24,20 @@ export enum RouteNames {
     PROFILE_PAGE = 'PROFILE_PAGE',
 }
 
-interface IMetaLayout {
-    path: string;
-    name: RouteNames;
-    component: VueConstructor;
+type MetaType = {
     meta?: {
         layout?: 'authorized-layout' | 'unauthorized-layout';
         auth?: boolean;
     };
-    redirect?: string;
-}
+};
 
-const routes: Array<IMetaLayout> = [
+type RoutesType = RouteConfig & MetaType;
+
+const routes: Array<RoutesType> = [
     {
-        path: '*',
+        path: '/page404',
         name: RouteNames.PAGE_404,
-        redirect: '/register',
-        component: RegisterPage,
+        component: Page404,
         meta: {
             layout: 'unauthorized-layout',
         },
@@ -77,13 +75,30 @@ const routes: Array<IMetaLayout> = [
         },
     },
     {
+        path: '/chat/:id',
+        name: RouteNames.CHAT_PAGE,
+        component: ChatPage,
+        meta: {
+            auth: true,
+        },
+    },
+    {
         path: '/profile',
         name: RouteNames.PROFILE_PAGE,
         component: ProfilePage,
         meta: {
-            auth: true
-        }
-    }
+            auth: true,
+        },
+    },
+    {
+        path: '*',
+        name: RouteNames.PAGE_404,
+        redirect: '/page404',
+        component: Page404,
+        meta: {
+            layout: 'unauthorized-layout',
+        },
+    },
 ];
 
 const router = new VueRouter({
@@ -92,20 +107,22 @@ const router = new VueRouter({
     routes,
 });
 
-/*router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const requireAuth = to.matched.some((record) => record.meta.auth);
     if (!requireAuth) return next();
 
     const token = localStorage.getItem('token');
     if (!token) return next('/login');
 
-    const authRecourse = new AuthResource();
-    const isValidToken = await authRecourse.checkAuth(token);
-    if (isValidToken) return next();
-
-    store.commit(MutationTypes.SET_TOKEN, '');
-    localStorage.removeItem('token');
-    return next('/login');
-});*/
-
+    try {
+        const tokenData = getDataFromJWT(token);
+        if (tokenData.exp * 1000 < Date.now()) {
+            await store.dispatch(ActionTypes.REFRESH_TOKEN);
+            if (!store.state.token) return next('/login');
+        }
+        return next();
+    } catch (e) {
+        return next('/login');
+    }
+});
 export default router;

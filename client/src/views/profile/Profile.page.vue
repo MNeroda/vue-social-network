@@ -6,14 +6,13 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { MutationTypes } from '@/store/types';
+import { ActionTypes, MutationTypes } from '@/store/types';
 
 @Component
 export default class ProfilePage extends Vue {
     handleLogout(): void {
-        this.$store.commit(MutationTypes.SET_TOKEN, null);
+        this.$store.dispatch(ActionTypes.LOGOUT);
         this.$router.push('/login');
     }
-
 }
 </script>

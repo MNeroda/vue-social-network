@@ -9,9 +9,7 @@ Vue.use(Vuex);
 export default new Vuex.Store<AppState>({
     state: {
         token: '',
-        userId: '',
-        errors: [],
-        info: []
+        prevTokenTimeout: undefined, //предыдущий таймаут нужен чтобы в случае логаута отменились обновления токенов
     },
     actions,
     mutations,

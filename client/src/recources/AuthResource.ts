@@ -23,23 +23,15 @@ export class AuthResource extends BaseResource {
         return this.axios.post('/login', form);
     }
 
-    checkAuth(token: string) {
-        return this.axios
-            .get('/check-auth', {
-                headers: {
-                    authorization: `Bearer ${token}`,
-                },
-            })
-            .then((res) => res.data.login);
+    refreshToken(fingerPrint: string): Promise<any> {
+        return this.axios.get('/refresh-token', {
+            params: {
+                fingerPrint,
+            },
+        });
     }
 
-    test(fingerPrint: string): Promise<any> {
-        return this.axios
-            .get('/refresh-token', {
-                params: {
-                    fingerPrint,
-                },
-            })
-            .then((res) => res.data);
+    logout(): Promise<any> {
+        return this.axios.get('/logout');
     }
 }

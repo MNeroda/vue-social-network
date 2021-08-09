@@ -100,13 +100,7 @@ import { IFormRegister } from '@/types/user';
 import { mapActions } from 'vuex';
 import { ActionTypes } from '@/store/types';
 
-@Component({
-    methods: {
-        ...mapActions({
-            register: ActionTypes.REGISTER,
-        }),
-    },
-})
+@Component
 export default class RegisterPage extends Vue {
     isValid = false;
     form: IFormRegister = {
@@ -116,8 +110,6 @@ export default class RegisterPage extends Vue {
         phone: '',
     };
     repeatPassword = '';
-
-    register!: (form: IFormRegister) => Promise<void>;
 
     emailRules = [
         validators.required('Введите email'),
@@ -168,7 +160,8 @@ export default class RegisterPage extends Vue {
             return;
         }
 
-        await this.register(this.form);
+        await this.$store.dispatch(ActionTypes.REGISTER, this.form);
+        await this.$router.push('/');
     }
 }
 </script>
