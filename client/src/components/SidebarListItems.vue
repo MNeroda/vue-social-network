@@ -24,11 +24,13 @@ interface IListItems {
     link: string;
 }
 @Component
-export default class Sidebar extends Vue {
+export default class SidebarListItems extends Vue {
     items: Array<IListItems> = [
         { text: 'Главная', icon: 'mdi-clock', link: '/' },
         { text: 'Профиль', icon: 'mdi-clock', link: '/profile' },
         { text: 'Диалоги', icon: 'mdi-account', link: '/chat' },
+        { text: 'Друзья', icon: 'mdi-account', link: '/friends' },
+        { text: 'Сообщества', icon: 'mdi-account', link: '/groups' },
     ];
 }
 </script>

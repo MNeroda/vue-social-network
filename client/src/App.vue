@@ -20,6 +20,12 @@ export default class App extends Vue {
     get layout(): string {
         return this.$route.meta?.layout || 'authorized-layout';
     }
+
+    async mounted() {
+        if (localStorage.getItem('token')) {
+            await this.$store.dispatch(ActionTypes.REFRESH_TOKEN)
+        }
+    }
 }
 </script>
 

@@ -9,4 +9,7 @@ export const mutations: Mutations = {
         clearTimeout(state.prevTokenTimeout);
         state.prevTokenTimeout = timeouts;
     },
+    [MutationTypes.SET_USER_ID]: (state, userId) => {
+        state.userId = userId
+    }
 };

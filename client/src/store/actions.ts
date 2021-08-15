@@ -1,3 +1,4 @@
+import store from '@/store';
 import { Actions } from '@/types/vuexTypings';
 import {
     ActionBindings,
@@ -8,9 +9,16 @@ import {
 import { AuthResource } from '@/recources/AuthResource';
 import { IFormLogin, IFormRegister } from '@/types/user';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { getDataFromJWT } from '@/modules/helpers/JWTHelper';
+import { getDataFromJWT, IDecryptedToken } from '@/modules/helpers/JWTHelper';
 
 const authResource = new AuthResource();
+
+function setTokenTimeout(tokenData: IDecryptedToken) {
+    const timeout = setTimeout(() => {
+        store.dispatch(ActionTypes.REFRESH_TOKEN);
+    }, tokenData.exp * 1000 - Date.now() - 60000);
+    store.commit(MutationTypes.SET_PREV_TOKEN_TIMEOUT, timeout);
+}
 
 export const actions: Actions<ActionBindings, AppState, AppState> = {
     [ActionTypes.LOGIN]: async (
@@ -24,12 +32,14 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
                 email: form.email,
                 password: form.password,
             };
-            const response = await authResource.login({
+            const token = await authResource.login({
                 ...objForm,
                 fingerPrint: fingerPrint.visitorId,
             });
-            console.log(response);
-            commit(MutationTypes.SET_TOKEN, response.data.accessToken);
+            const tokenData = getDataFromJWT(token.data.accessToken);
+            commit(MutationTypes.SET_TOKEN, token.data.accessToken);
+            commit(MutationTypes.SET_USER_ID, tokenData.userId);
+            setTokenTimeout(token.data.accessToken);
         } catch (e) {
             console.log(e);
         }
@@ -42,11 +52,14 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
         try {
             const fpPromise = await FingerprintJS.load();
             const fingerPrint = await fpPromise.get();
-            const response = await authResource.registerNewUser({
+            const token = await authResource.registerNewUser({
                 ...form,
                 fingerPrint: fingerPrint.visitorId,
             });
-            commit(MutationTypes.SET_TOKEN, response.data.accessToken);
+            commit(MutationTypes.SET_TOKEN, token.data.accessToken);
+            const tokenData = getDataFromJWT(token.data.accessToken);
+            commit(MutationTypes.SET_USER_ID, tokenData.userId)
+            setTokenTimeout(token.data.accessToken);
         } catch (e) {
             console.log(e);
         }
@@ -58,16 +71,14 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
             const token = await authResource.refreshToken(
                 fingerPrint.visitorId
             );
-            if (!token) return;
+            if (!token) {
+                await dispatch(ActionTypes.LOGOUT);
+                return;
+            }
             commit(MutationTypes.SET_TOKEN, token.data.accessToken);
             const tokenData = getDataFromJWT(token.data.accessToken);
-
-            //Когда закончится жизнь токена обновить его,
-            //делаю это заранее за 60 секунд, чтобы исключить проблемы
-            const resetTokenTimeout = setTimeout(() => {
-                dispatch(ActionTypes.REFRESH_TOKEN);
-            }, tokenData.exp * 1000 - Date.now() - 60000);
-            commit(MutationTypes.SET_PREV_TOKEN_TIMEOUT, resetTokenTimeout);
+            commit(MutationTypes.SET_USER_ID, tokenData.userId)
+            setTokenTimeout(tokenData);
         } catch (e) {
             commit(MutationTypes.SET_TOKEN, '');
         }

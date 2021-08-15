@@ -1,34 +1,33 @@
 <template>
     <div class="background">
         <navbar />
-        <v-container class=''>
-            <v-row justify="center">
-                <v-col cols="2">
-                    <v-card>
-                        <sidebar v-if='!$route.path.includes("/chat")' />
-                    </v-card>
-                </v-col>
-                <v-col cols="10">
-                    <router-view />
-                </v-col>
-            </v-row>
-        </v-container>
+        <router-view v-if='$vuetify.breakpoint.mobile || $route.path.includes("/chat")'/>
+
+        <v-row class='pa-5' v-else>
+            <v-col cols="2">
+                <v-card>
+                    <sidebar-list-items></sidebar-list-items>
+                </v-card>
+            </v-col>
+            <v-col cols='10'>
+                <router-view />
+            </v-col>
+        </v-row>
+
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { Navbar, Sidebar } from '@/components';
+import { Vue, Component } from 'vue-property-decorator';
+import { Navbar, SidebarListItems } from '@/components';
 
 @Component({
     components: {
+        SidebarListItems,
         Navbar,
-        Sidebar,
     },
 })
-export default class AuthorizedLayout extends Vue {
-
-}
+export default class AuthorizedLayout extends Vue {}
 </script>
 
 <style scoped>

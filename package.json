@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/MNeroda/vue-social-network#readme",
   "devDependencies": {
-    "concurrently": "^6.2.0"
+    "concurrently": "^6.2.0",
+    "prettier": "^2.3.2"
   }
 }

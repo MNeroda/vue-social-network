@@ -5,7 +5,7 @@
             dark
         >
             <v-app-bar-nav-icon
-                v-if="$route.path.includes('/chat')"
+                v-if="$route.path.includes('/chat') || $vuetify.breakpoint.mobile"
                 @click="drawer = true"
             ></v-app-bar-nav-icon>
 
