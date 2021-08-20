@@ -5,7 +5,7 @@ import {
     RegisterPage,
     LoginPage,
     Page404,
-    HomePage,
+    UserPage,
     ChatPage,
     ProfilePage,
 } from '@/views';
@@ -19,19 +19,18 @@ export enum RouteNames {
     LOGIN_PAGE = 'LOGIN_PAGE',
     REGISTER_PAGE = 'REGISTER_PAGE',
     PAGE_404 = 'PAGE_404',
-    HOME_PAGE = 'HOME_PAGE',
+    USER_PAGE = 'USER_PAGE',
     CHAT_PAGE = 'CHAT_PAGE',
     PROFILE_PAGE = 'PROFILE_PAGE',
 }
 
-type MetaType = {
+type RoutesType = RouteConfig & {
+    name: RouteNames
     meta?: {
         layout?: 'authorized-layout' | 'unauthorized-layout';
         auth?: boolean;
     };
 };
-
-type RoutesType = RouteConfig & MetaType;
 
 const routes: Array<RoutesType> = [
     {
@@ -60,8 +59,8 @@ const routes: Array<RoutesType> = [
     },
     {
         path: '/',
-        name: RouteNames.HOME_PAGE,
-        component: HomePage,
+        name: RouteNames.USER_PAGE,
+        component: UserPage,
         meta: {
             auth: true,
         },

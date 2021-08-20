@@ -1,11 +1,11 @@
 <template>
     <v-row>
-        <v-col cols="3">
+        <v-col cols="3" class='d-flex flex-column' style='gap: 15px'>
             <avatar-user />
             <friends-user />
             <groups-user />
         </v-col>
-        <v-col cols="9">
+        <v-col cols="9" class='d-flex flex-column' style='gap: 15px'>
             <info-user />
             <photo-user />
             <post-list-user />

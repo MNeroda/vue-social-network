@@ -7,10 +7,10 @@ const app = express();
 app.use(cookieParser())
 app.use(express.json({ extended: true }));
 
-const firebase = require('./firebase/firebaseResource')
-
+app.use('/api/test', require('./routes/test.routes'))
 app.use('/api/auth', require('./routes/auth.routes'));
-app.use('/api/file-service', require('./routes/file.service.routes'))
+app.use('/api/user', require('./routes/user.actions.routes'));
+
 
 const PORT = config.get('port') || 5000;
 

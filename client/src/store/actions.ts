@@ -79,8 +79,9 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
             const tokenData = getDataFromJWT(token.data.accessToken);
             commit(MutationTypes.SET_USER_ID, tokenData.userId)
             setTokenTimeout(tokenData);
+            return
         } catch (e) {
-            commit(MutationTypes.SET_TOKEN, '');
+            await dispatch(ActionTypes.LOGOUT)
         }
     },
 
