@@ -1,5 +1,5 @@
 <template>
-    <div class="background">
+    <div>
         <navbar />
         <router-view v-if='$vuetify.breakpoint.mobile || $route.path.includes("/chat")'/>
 
@@ -13,7 +13,6 @@
                 <router-view />
             </v-col>
         </v-row>
-
     </div>
 </template>
 
@@ -31,8 +30,5 @@ export default class AuthorizedLayout extends Vue {}
 </script>
 
 <style scoped>
-.background {
-    background-color: var(--sn-unauthorized-theme);
-    height: 100vh;
-}
+
 </style>

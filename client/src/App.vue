@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <v-app style='background: var(--sn-unauthorized-theme)'>
         <div v-if='loading'></div>
         <component v-else :is="layout"></component>
     </v-app>

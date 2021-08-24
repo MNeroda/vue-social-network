@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose')
+const {Schema, model, Types} = require('mongoose')
 
 const schema = new Schema({
     email: {
@@ -17,8 +17,20 @@ const schema = new Schema({
     phone: {
         type: String,
         default: ''
-    }
+    },
 
+    conversationList: [{
+        type: Types.ObjectId,
+        ref: "Conversation",
+    }],
+    friendsList: [{
+        type: Types.ObjectId,
+        ref: 'User',
+    }],
+    socketId: {
+        type: String,
+        default: null
+    }
 })
 
 module.exports = model("User", schema)

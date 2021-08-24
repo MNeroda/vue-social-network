@@ -13,10 +13,12 @@ const schema = new Schema({
         {
             value: {
                 type: String,
+                required: true
             },
             senderId: {
                 type: Types.ObjectId,
                 ref: 'User',
+                required: true
             },
             date: {
                 type: Date,

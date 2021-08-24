@@ -7,7 +7,6 @@ const app = express();
 app.use(cookieParser())
 app.use(express.json({ extended: true }));
 
-app.use('/api/test', require('./routes/test.routes'))
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/user', require('./routes/user.actions.routes'));
 

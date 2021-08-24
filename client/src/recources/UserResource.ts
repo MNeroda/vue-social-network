@@ -1,4 +1,5 @@
 import { BaseResource } from '@/recources/BaseResource';
+import store from '@/store';
 
 export class UserResource extends BaseResource {
     constructor() {
@@ -9,5 +10,13 @@ export class UserResource extends BaseResource {
         return this.axios.get('user-info', {
             params: { id },
         }).then(res => res.data);
+    }
+
+    async getConversation() {
+        return this.axios.get('get-conversations', {
+            headers: {
+                ['access-token']: store.state.token
+            }
+        })
     }
 }
