@@ -1,19 +1,16 @@
 const express = require('express');
 const config = require('config');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 
 const app = express();
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.json({ extended: true }));
 
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/user', require('./routes/user.actions.routes'));
 
-
 const PORT = config.get('port') || 5000;
-
-
 
 async function start() {
     try {

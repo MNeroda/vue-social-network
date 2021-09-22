@@ -13,12 +13,12 @@ const schema = new Schema({
         {
             value: {
                 type: String,
-                required: true
+                required: true,
             },
             senderId: {
                 type: Types.ObjectId,
                 ref: 'User',
-                required: true
+                required: true,
             },
             date: {
                 type: Date,
@@ -29,12 +29,12 @@ const schema = new Schema({
     lastMessage: {
         value: {
             type: String,
-            default: ''
+            default: '',
         },
         senderId: {
-            type: Types.ObjectId
-        }
-    }
+            type: Types.ObjectId,
+        },
+    },
 });
 
-module.exports = model('Conversation', schema)
+module.exports = model('Conversation', schema);

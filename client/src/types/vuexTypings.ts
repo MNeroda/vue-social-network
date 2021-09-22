@@ -7,7 +7,7 @@ export type Actions<Bindings, State, RootState> = {
         //@ts-ignore
         ...args: Parameters<Bindings[key]>
     ) => //@ts-ignore
-        ReturnType<Bindings[key]>;
+    ReturnType<Bindings[key]>;
 } &
     ActionTree<State, RootState>;
 

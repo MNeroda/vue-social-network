@@ -28,16 +28,16 @@ export class FileResource extends BaseResource {
                 const url = await ref.getDownloadURL();
                 return url;
             } catch (e) {
-                const ref = storage.ref('default-avatar.png')
-                const url = await ref.getDownloadURL()
-                return url
+                const ref = storage.ref('default-avatar.png');
+                const url = await ref.getDownloadURL();
+                return url;
             }
         }
     }
 
     async uploadAvatar(file: any, userId: string): Promise<void> {
-        const blob = file.slice(0, file.size, 'image/jpg')
-        const newFile = new File([blob], 'avatar.jpg', {type: 'image/jpg'})
+        const blob = file.slice(0, file.size, 'image/jpg');
+        const newFile = new File([blob], 'avatar.jpg', { type: 'image/jpg' });
         console.log(newFile);
         await storage.ref(`${userId}/avatar.jpg`).put(newFile);
     }

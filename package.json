@@ -1,25 +1,26 @@
 {
-  "name": "fullstack-sn",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "client": "npm run serve --prefix client",
-    "server": "npm run server --prefix backend",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MNeroda/vue-social-network.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MNeroda/vue-social-network/issues"
-  },
-  "homepage": "https://github.com/MNeroda/vue-social-network#readme",
-  "devDependencies": {
-    "concurrently": "^6.2.0",
-    "prettier": "^2.3.2"
-  }
+    "name": "fullstack-sn",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "client": "npm run serve --prefix client",
+        "server": "npm run server --prefix backend",
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "format": "prettier --write \"./**/*.{js,jsx,json,ts,tsx,vue}\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MNeroda/vue-social-network.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/MNeroda/vue-social-network/issues"
+    },
+    "homepage": "https://github.com/MNeroda/vue-social-network#readme",
+    "devDependencies": {
+        "concurrently": "^6.2.0",
+        "prettier": "^2.3.2"
+    }
 }

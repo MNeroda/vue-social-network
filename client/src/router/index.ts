@@ -25,9 +25,9 @@ export enum RouteNames {
 }
 
 type RoutesType = RouteConfig & {
-    name: RouteNames
+    name: RouteNames;
     meta?: {
-        layout?: 'authorized-layout' | 'unauthorized-layout';
+        layout?: 'authorized-layout' | 'unauthorized-layout' | 'chat-layout';
         auth?: boolean;
     };
 };
@@ -66,10 +66,16 @@ const routes: Array<RoutesType> = [
         },
     },
     {
+        path: '/user/:id',
+        name: RouteNames.USER_PAGE,
+        component: UserPage,
+    },
+    {
         path: '/chat',
         name: RouteNames.CHAT_PAGE,
         component: ChatPage,
         meta: {
+            layout: 'chat-layout',
             auth: true,
         },
     },
@@ -78,6 +84,7 @@ const routes: Array<RoutesType> = [
         name: RouteNames.CHAT_PAGE,
         component: ChatPage,
         meta: {
+            layout: 'chat-layout',
             auth: true,
         },
     },

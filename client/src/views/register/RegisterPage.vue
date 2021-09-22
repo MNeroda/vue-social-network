@@ -78,17 +78,11 @@
             </template>
         </v-text-field>
 
-        <v-btn
-            class="ma-1 white--text"
-            style="background-color: var(--sn-main-grey)"
-            @click="$router.push('/login')"
-        >
+        <v-btn class="bg-grey ma-1 white--text" @click="$router.push('/login')">
             вернуться
         </v-btn>
 
-        <v-btn style="background-color: var(--sn-main-orange)" type="submit">
-            Зарегестрироваться</v-btn
-        >
+        <v-btn class="bg-orange" type="submit"> Зарегестрироваться</v-btn>
     </v-form>
 </template>
 
@@ -166,7 +160,17 @@ export default class RegisterPage extends Vue {
 }
 </script>
 
-<style>
+<!--
+    Из-за отсутствия опций по измениению цветов во vuetify приходится извращаться таким способом
+    Если возникнет необходимость сделать подобное в другом компоненте, то там к инпуту добавить уникальный класс
+    и в дальнейшем прописывать стили как для класса register-page-text-field
+
+
+    к тому же текущий блок стилей невозможно сделать scoped из-за того, что необходимо передавать стили во vuetify компоненты
+    Если возникнет нужда написать класы не предназначенные для инпутов рекомендуемо
+    создать еще один блок <style> и сделать его scoped.
+-->
+<style lang="scss">
 .register-page-text-field:not(.error--text) .v-text-field__slot input {
     color: white !important;
 }
@@ -175,6 +179,6 @@ export default class RegisterPage extends Vue {
 }
 
 .register-page-text-field.error--text * {
-    color: var(--sn-main-red) !important;
+    color: $sn-main-red !important;
 }
 </style>

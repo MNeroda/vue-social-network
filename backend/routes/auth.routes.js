@@ -203,12 +203,10 @@ router.get('/logout', (req, res) => {
         /*expires = милисекунды * секунды * минуты * часы * дни*/
         httpOnly: true,
     });
-    return res
-        .status(200)
-        .json({
-            message: 'Вы успешно вышли из системы',
-            messageType: 'success',
-        });
+    return res.status(200).json({
+        message: 'Вы успешно вышли из системы',
+        messageType: 'success',
+    });
 });
 
 module.exports = router;

@@ -6,11 +6,13 @@ interface IDecrypted {
     iat: number;
 }
 
-export interface IDecryptedToken extends IDecrypted{
-    userId: string
+export interface IDecryptedToken extends IDecrypted {
+    userId: string;
 }
 
-export function getDataFromJWT<T extends IDecryptedToken>(token: string): T & void {
+export function getDataFromJWT<T extends IDecryptedToken>(
+    token: string
+): T & void {
     try {
         return JSON.parse(atob(token.split('.')[1]));
     } catch (e) {

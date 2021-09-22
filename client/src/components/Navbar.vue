@@ -1,11 +1,10 @@
 <template>
-    <div>
-        <v-app-bar
-            style="color: white; background-color: var(--sn-main-blue)"
-            dark
-        >
+    <div class="navbar">
+        <v-app-bar class="bg-blue white--text navbar-bg">
             <v-app-bar-nav-icon
-                v-if="$route.path.includes('/chat') || $vuetify.breakpoint.mobile"
+                v-if="
+                    $route.path.includes('/chat') || $vuetify.breakpoint.mobile
+                "
                 @click="drawer = true"
             ></v-app-bar-nav-icon>
 
@@ -33,3 +32,19 @@ export default class Navbar extends Vue {
     group = null;
 }
 </script>
+
+<style lang="scss" scoped>
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.navbar-bg {
+    display: flex;
+    align-items: center;
+    height: $header-height !important;
+}
+</style>

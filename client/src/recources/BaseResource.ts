@@ -11,8 +11,6 @@ export class BaseResource {
             responseType: 'json',
         });
 
-
-
         /*Плагин сообщений с сервера*/
         this.axios.interceptors.response.use(
             function (response) {

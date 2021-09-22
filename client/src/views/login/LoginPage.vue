@@ -34,18 +34,14 @@
         </v-text-field>
 
         <v-btn
-            class="ma-1 white--text"
-            style="background-color: var(--sn-main-orange)"
+            class="ma-1 white--text bg-orange"
             type="submit"
             :disabled="isLoading"
         >
             Войти
         </v-btn>
 
-        <v-btn
-            style="background-color: var(--sn-main-grey)"
-            @click="$router.push('/register')"
-        >
+        <v-btn class="bg-grey" @click="$router.push('/register')">
             Создать профиль</v-btn
         >
     </v-form>
@@ -101,15 +97,28 @@ export default class LoginPage extends Vue {
 }
 </script>
 
-<style>
+<!--
+    Из-за отсутствия опций по измениению цветов во vuetify приходится извращаться таким способом
+    Если возникнет необходимость сделать подобное в другом компоненте, то там к инпуту добавить уникальный класс
+    и в дальнейшем прописывать стили как для класса login-page-text-field
+
+
+    к тому же текущий блок стилей невозможно сделать scoped из-за того, что необходимо передавать стили во vuetify компоненты
+    Если возникнет нужда написать класы не предназначенные для инпутов рекомендуемо
+    создать еще один блок <style> и сделать его scoped.
+-->
+<style lang="scss">
 .login-page-text-field:not(.error--text) .v-text-field__slot input {
     color: white !important;
 }
-.login-page-text-field:not(.error--text) .v-input__slot fieldset {
+.login-page-text-field:not(.error--text)
+    .v-input__control
+    .v-input__slot
+    fieldset {
     border-color: white !important;
 }
 
 .login-page-text-field.error--text * {
-    color: var(--sn-main-red) !important;
+    color: $sn-main-red !important;
 }
 </style>

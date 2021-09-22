@@ -1,10 +1,10 @@
 <template>
-    <div class="background">
+    <div class="bg-light-grey" style="height: 100vh">
         <v-container class="mx-auto mt-10" style="max-width: 700px">
-            <v-card-title class="py-0 pr-3" style="color: var(--sn-main-blue)">
+            <v-card-title class="col-blue py-0 pr-3">
                 {{ title }}
             </v-card-title>
-            <v-card class="main-card py-5 px-8">
+            <v-card class="bg-blue white--text py-5 px-8">
                 <router-view />
             </v-card>
         </v-container>
@@ -24,15 +24,3 @@ export default class UnauthorizedLayout extends Vue {
     }
 }
 </script>
-
-<style scoped lang="scss">
-.background {
-    background-color: var(--sn-unauthorized-theme);
-    height: 100vh;
-}
-
-.main-card {
-    background: var(--sn-main-blue);
-    color: white;
-}
-</style>

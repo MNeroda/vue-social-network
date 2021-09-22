@@ -1,6 +1,8 @@
 <template>
     <v-card>
-        <v-toolbar
+        <router-link to="chat/612330e64b56f51a285a6ddd">test</router-link>
+
+        <!--        <v-toolbar
             color='blue'
             dark
         >
@@ -36,16 +38,15 @@
                     </v-list-item-content>
                 </v-list-item>
             </template>
-        </v-list>
+        </v-list>-->
     </v-card>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class ChatList extends Vue {
-
     items = [
         {
             avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
@@ -62,20 +63,23 @@ export default class ChatList extends Vue {
         {
             avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
             title: 'Oui oui',
-            subtitle: '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?',
+            subtitle:
+                '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?',
         },
         { divider: true, inset: true },
         {
             avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
             title: 'Birthday gift',
-            subtitle: '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?',
+            subtitle:
+                '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?',
         },
         { divider: true, inset: true },
         {
             avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
             title: 'Recipe to try',
-            subtitle: '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
+            subtitle:
+                '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
         },
-    ]
+    ];
 }
 </script>

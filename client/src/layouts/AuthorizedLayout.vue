@@ -1,18 +1,22 @@
 <template>
-    <div>
+    <div
+        class="bg-light-grey d-flex flex-column"
+        style="position: relative; min-height: 100vh"
+    >
         <navbar />
-        <router-view v-if='$vuetify.breakpoint.mobile || $route.path.includes("/chat")'/>
+        <router-view
+            class="view"
+            v-if="$vuetify.breakpoint.mobile || $route.path.includes('/chat')"
+        />
 
-        <v-row class='pa-5' v-else>
-            <v-col cols="2">
-                <v-card>
-                    <sidebar-list-items></sidebar-list-items>
-                </v-card>
-            </v-col>
-            <v-col cols='10'>
-                <router-view />
-            </v-col>
-        </v-row>
+        <div v-else class="view d-flex" style="gap: 25px">
+            <v-card class="ml-3" style="height: fit-content; margin-top: 20px">
+                <sidebar-list-items></sidebar-list-items>
+            </v-card>
+            <div>
+                <router-view style="margin-top: 8px"></router-view>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -29,6 +33,10 @@ import { Navbar, SidebarListItems } from '@/components';
 export default class AuthorizedLayout extends Vue {}
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.view {
+    margin-top: $header-height;
+    margin-bottom: 0 !important;
+    padding-bottom: 30px;
+}
 </style>

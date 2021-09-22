@@ -58,7 +58,7 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
             });
             commit(MutationTypes.SET_TOKEN, token.data.accessToken);
             const tokenData = getDataFromJWT(token.data.accessToken);
-            commit(MutationTypes.SET_USER_ID, tokenData.userId)
+            commit(MutationTypes.SET_USER_ID, tokenData.userId);
             setTokenTimeout(token.data.accessToken);
         } catch (e) {
             console.log(e);
@@ -77,11 +77,12 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
             }
             commit(MutationTypes.SET_TOKEN, token.data.accessToken);
             const tokenData = getDataFromJWT(token.data.accessToken);
-            commit(MutationTypes.SET_USER_ID, tokenData.userId)
+            commit(MutationTypes.SET_USER_ID, tokenData.userId);
             setTokenTimeout(tokenData);
-            return
+            return;
         } catch (e) {
-            await dispatch(ActionTypes.LOGOUT)
+            await dispatch(ActionTypes.LOGOUT);
+            return;
         }
     },
 

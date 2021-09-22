@@ -7,16 +7,18 @@ export class UserResource extends BaseResource {
     }
 
     async getUserInfo(id: string) {
-        return this.axios.get('user-info', {
-            params: { id },
-        }).then(res => res.data);
+        return this.axios
+            .get('user-info', {
+                params: { id },
+            })
+            .then((res) => res.data);
     }
 
     async getConversation() {
         return this.axios.get('get-conversations', {
             headers: {
-                ['access-token']: store.state.token
-            }
-        })
+                ['access-token']: store.state.token,
+            },
+        });
     }
 }

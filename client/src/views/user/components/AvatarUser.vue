@@ -6,14 +6,24 @@
         <!--Firebase не дает скачивать файлы по url из-за CORS приходиться делать так:-->
         <!--<img :src='url'/>Из-за этого случаеся небольшой визуальный баг между получением url -->
         <!--по id пользователся и загрузкой изображения в img-->
-        <v-skeleton-loader v-if='loading' width='100%' type='image'></v-skeleton-loader>
-        <img v-else-if="imagePreview" :src="imagePreview" style="max-width: 100%"/>
-        <v-img v-else :src='imageURL' style='max-width: 100%'>
+        <v-skeleton-loader
+            v-if="loading"
+            width="100%"
+            type="image"
+        ></v-skeleton-loader>
+        <img
+            v-else-if="imagePreview"
+            :src="imagePreview"
+            style="max-width: 100%"
+        />
+        <v-img v-else :src="imageURL" style="max-width: 100%">
             <template v-slot:placeholder>
-                <v-skeleton-loader width='100%' type='image'></v-skeleton-loader>
+                <v-skeleton-loader
+                    width="100%"
+                    type="image"
+                ></v-skeleton-loader>
             </template>
         </v-img>
-
 
         <div>
             <input
@@ -44,15 +54,15 @@ const fileResource = new FileResource();
 @Component
 export default class AvatarUser extends Vue {
     test() {
-        this.loading = false
+        this.loading = false;
     }
-    loading = true
+    loading = true;
     uploadImage: File | null = null;
     imagePreview: string | ArrayBuffer | null = null;
 
     /*imageURL: File | null = '';*/
     imageURL: any = '';
-    downloadedImagePreview: string | ArrayBuffer | null = null
+    downloadedImagePreview: string | ArrayBuffer | null = null;
     clickOnInputImage() {
         const ref: VueElementClickable = this.$refs
             .file! as VueElementClickable;
@@ -64,7 +74,7 @@ export default class AvatarUser extends Vue {
             this.uploadImage = null;
         } else {
             this.uploadImage = e.target.files![0];
-            this.loading = false
+            this.loading = false;
             fileResource.uploadAvatar(
                 this.uploadImage,
                 this.$store.state.userId
@@ -79,12 +89,12 @@ export default class AvatarUser extends Vue {
             reader.readAsDataURL(this.uploadImage as Blob);
             reader.onload = () => {
                 this.imagePreview = reader.result;
-                this.loading = false
+                this.loading = false;
             };
         }
     }
 
-/*    @Watch('imageURL', { deep: true })
+    /*    @Watch('imageURL', { deep: true })
     async changeDownloadedImagePreview() {
         if (this.imageURL) {
             const reader = new FileReader();
@@ -100,9 +110,8 @@ export default class AvatarUser extends Vue {
         this.imageURL = await fileResource.getUserAvatar(
             this.$store.state.userId
         );
-        this.loading = false
+        this.loading = false;
     }
-
 }
 </script>
 
@@ -110,10 +119,9 @@ export default class AvatarUser extends Vue {
 .upload-image-label {
     cursor: pointer;
     position: relative;
-    transition: all .2s;
+    transition: all 0.2s;
     &:hover {
         transform: scale(1.05);
     }
-
 }
 </style>

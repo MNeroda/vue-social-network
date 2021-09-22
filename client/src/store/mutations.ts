@@ -2,7 +2,7 @@ import { Mutations, MutationTypes } from './types';
 
 export const mutations: Mutations = {
     [MutationTypes.SET_TOKEN]: (state, token) => {
-        localStorage.setItem('token', token)
+        localStorage.setItem('token', token);
         state.token = token;
     },
     [MutationTypes.SET_PREV_TOKEN_TIMEOUT]: (state, timeouts) => {
@@ -10,6 +10,6 @@ export const mutations: Mutations = {
         state.prevTokenTimeout = timeouts;
     },
     [MutationTypes.SET_USER_ID]: (state, userId) => {
-        state.userId = userId
-    }
+        state.userId = userId;
+    },
 };
