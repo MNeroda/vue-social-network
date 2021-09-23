@@ -15,11 +15,11 @@ router.get('/get-conversations', authMiddleware, async (req, res) => {
     const user = await User.findById(req.userId);
 
     if (user.conversationList.length) {
-        console.log('lolo');
         return res.status(200).json({ res: [] });
     }
 
     return res.status(200).json({ res: [] });
 });
+
 
 module.exports = router;

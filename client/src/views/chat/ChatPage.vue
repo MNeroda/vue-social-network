@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { UserResource } from '@/recources/UserResource';
 import ChatList from '@/views/chat/components/ChatList.vue';
 import ChatContent from '@/views/chat/components/ChatContent.vue';
