@@ -1,20 +1,16 @@
 <template>
-    <div
-        class="bg-light-grey d-flex flex-column"
-        style="position: relative; min-height: 100vh"
-    >
+    <div class="" style="position: relative">
         <navbar />
-        <router-view
-            class="view"
-            v-if="$vuetify.breakpoint.mobile || $route.path.includes('/chat')"
-        />
 
-        <div v-else class="view d-flex" style="gap: 25px">
-            <v-card class="ml-3" style="height: fit-content; margin-top: 20px">
+        <div class="view d-flex bg-light-grey" style="gap: 25px">
+            <v-card
+                class="sidebar-auth-layout ml-3"
+                style="height: fit-content"
+            >
                 <sidebar-list-items></sidebar-list-items>
             </v-card>
-            <div>
-                <router-view style="margin-top: 8px"></router-view>
+            <div class="main-content-auth-layout mt-0" style="width: 100%">
+                <router-view></router-view>
             </div>
         </div>
     </div>
@@ -35,8 +31,22 @@ export default class AuthorizedLayout extends Vue {}
 
 <style lang="scss" scoped>
 .view {
-    margin-top: $header-height;
-    margin-bottom: 0 !important;
-    padding-bottom: 30px;
+    position: absolute;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    top: $header-height;
+    bottom: -100vh;
+    left: 0;
+    right: 0;
+}
+
+.sidebar-auth-layout {
+    margin-top: 20px;
+}
+.main-content-auth-layout {
+    @include scrollbar($sn-main-grey);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 20px;
 }
 </style>

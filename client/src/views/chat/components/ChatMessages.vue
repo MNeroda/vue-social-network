@@ -1,5 +1,5 @@
 <template>
-    <div style="">
+    <div class="pa-4">
         <h3>Content</h3>
         <h2>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquid
@@ -72,4 +72,11 @@ import { Vue, Component } from 'vue-property-decorator';
 export default class ChatMessages extends Vue {}
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+* {
+    color: black;
+}
+
+.content {
+}
+</style>

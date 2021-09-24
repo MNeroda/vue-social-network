@@ -1,3 +1,6 @@
 @import 'fonts.scss';
 @import "variables/_colors.scss";
 @import "variables/_sizes.scss";
+
+@import "mixins/scrollbar_mixin";
+@import "mixins/change_colors_text_input_mixin";

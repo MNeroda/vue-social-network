@@ -1,44 +1,49 @@
 <template>
     <v-card>
-        <router-link to="chat/612330e64b56f51a285a6ddd">test</router-link>
-
-        <!--        <v-toolbar
-            color='blue'
-            dark
-        >
-            <v-text-field
-                placeholder='Поиск'
-                style='margin-bottom: -14px;'
-            ></v-text-field>
-
-            <v-btn icon>
-                <v-icon>mdi-magnify</v-icon>
-            </v-btn>
-        </v-toolbar>
-
-        <v-list three-line>
-            <template v-for="(item, index) in items">
-                <v-divider
-                    v-if="item.divider"
-                    :key="index"
-                    :inset="item.inset"
-                ></v-divider>
-
-                <v-list-item
-                    v-else
-                    :key="item.title"
-                >
-                    <v-list-item-avatar>
-                        <v-img :src="item.avatar"></v-img>
-                    </v-list-item-avatar>
-
-                    <v-list-item-content>
-                        <v-list-item-title v-html="item.title"></v-list-item-title>
-                        <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>
-                    </v-list-item-content>
-                </v-list-item>
-            </template>
-        </v-list>-->
+        <div class="tmp">
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+            <router-link to="/chat/612330e64b56f51a285a6ddd">
+                <h1>TEST</h1>
+            </router-link>
+        </div>
     </v-card>
 </template>
 
@@ -46,40 +51,13 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class ChatList extends Vue {
-    items = [
-        {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-            title: 'Brunch this weekend?',
-            subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-        },
-        { divider: true, inset: true },
-        {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-            title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
-            subtitle: `<span class="text--primary">to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend.`,
-        },
-        { divider: true, inset: true },
-        {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-            title: 'Oui oui',
-            subtitle:
-                '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?',
-        },
-        { divider: true, inset: true },
-        {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
-            title: 'Birthday gift',
-            subtitle:
-                '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?',
-        },
-        { divider: true, inset: true },
-        {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            title: 'Recipe to try',
-            subtitle:
-                '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
-        },
-    ];
-}
+export default class ChatList extends Vue {}
 </script>
+
+<style lang="scss" scoped>
+.tmp {
+    overflow: auto;
+    height: 100%;
+    @include scrollbar($sn-main-grey);
+}
+</style>

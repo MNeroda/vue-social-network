@@ -35,7 +35,7 @@ const schema = new Schema({
         type: String,
         default: null,
     },
-    hasAvatar: {
+    isHaveAvatar: {
         type: Boolean,
         default: false,
     },

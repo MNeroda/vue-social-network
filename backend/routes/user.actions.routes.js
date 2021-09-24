@@ -8,7 +8,12 @@ router.get('/user-info', async (req, res) => {
     const user = await User.findById(req.query.id);
     return res
         .status(200)
-        .json({ phone: user.phone, email: user.email, name: user.name });
+        .json({
+            phone: user.phone,
+            email: user.email,
+            name: user.name,
+            isHaveAvatar: user.isHaveAvatar,
+        });
 });
 
 router.get('/get-conversations', authMiddleware, async (req, res) => {
@@ -20,6 +25,5 @@ router.get('/get-conversations', authMiddleware, async (req, res) => {
 
     return res.status(200).json({ res: [] });
 });
-
 
 module.exports = router;

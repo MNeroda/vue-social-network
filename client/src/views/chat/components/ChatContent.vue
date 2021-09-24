@@ -1,9 +1,6 @@
 <template>
-    <v-card
-        class="d-flex flex-column justify-space-between"
-        style="position: relative"
-    >
-        <chat-messages />
+    <v-card>
+        <chat-messages class="messages-block" />
 
         <div class="send-block">
             <v-text-field placeholder="message"></v-text-field>
@@ -26,8 +23,15 @@ export default class ChatContent extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.messages-block {
+    overflow: auto;
+    height: calc(100% - #{$block-send-message-height});
+
+    @include scrollbar($sn-main-grey);
+}
+
 .send-block {
-    position: sticky;
+    position: absolute;
     border-top: 3px solid $sn-main-grey;
     background-color: white;
     bottom: 0;

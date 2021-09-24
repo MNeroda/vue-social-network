@@ -3,9 +3,6 @@
         class="d-flex flex-column align-center justify-center pa-4"
         style="gap: 10px"
     >
-        <!--Firebase не дает скачивать файлы по url из-за CORS приходиться делать так:-->
-        <!--<img :src='url'/>Из-за этого случаеся небольшой визуальный баг между получением url -->
-        <!--по id пользователся и загрузкой изображения в img-->
         <v-skeleton-loader
             v-if="loading"
             width="100%"
@@ -46,13 +43,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
+import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
 import { FileResource } from '@/recources/FileResource';
 import { VueElementClickable, GenericEvent } from '@/types/events';
 
 const fileResource = new FileResource();
 @Component
 export default class AvatarUser extends Vue {
+    @Prop({ default: false }) isHaveAvatar!: boolean;
     test() {
         this.loading = false;
     }
@@ -75,10 +73,7 @@ export default class AvatarUser extends Vue {
         } else {
             this.uploadImage = e.target.files![0];
             this.loading = false;
-            fileResource.uploadAvatar(
-                this.uploadImage,
-                this.$store.state.userId
-            );
+            fileResource.uploadAvatar(this.uploadImage);
         }
     }
 
@@ -94,21 +89,10 @@ export default class AvatarUser extends Vue {
         }
     }
 
-    /*    @Watch('imageURL', { deep: true })
-    async changeDownloadedImagePreview() {
-        if (this.imageURL) {
-            const reader = new FileReader();
-            reader.readAsDataURL(this.imageURL as Blob);
-            reader.onload = () => {
-                this.downloadedImagePreview = reader.result;
-                this.loading = false
-            };
-        }
-    }*/
-
     async mounted() {
         this.imageURL = await fileResource.getUserAvatar(
-            this.$store.state.userId
+            this.$store.state.userId,
+            this.isHaveAvatar
         );
         this.loading = false;
     }

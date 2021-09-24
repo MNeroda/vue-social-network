@@ -97,28 +97,8 @@ export default class LoginPage extends Vue {
 }
 </script>
 
-<!--
-    Из-за отсутствия опций по измениению цветов во vuetify приходится извращаться таким способом
-    Если возникнет необходимость сделать подобное в другом компоненте, то там к инпуту добавить уникальный класс
-    и в дальнейшем прописывать стили как для класса login-page-text-field
-
-
-    к тому же текущий блок стилей невозможно сделать scoped из-за того, что необходимо передавать стили во vuetify компоненты
-    Если возникнет нужда написать класы не предназначенные для инпутов рекомендуемо
-    создать еще один блок <style> и сделать его scoped.
--->
 <style lang="scss">
-.login-page-text-field:not(.error--text) .v-text-field__slot input {
-    color: white !important;
-}
-.login-page-text-field:not(.error--text)
-    .v-input__control
-    .v-input__slot
-    fieldset {
-    border-color: white !important;
-}
-
-.login-page-text-field.error--text * {
-    color: $sn-main-red !important;
+.login-page-text-field {
+    @include changeColorTextInput();
 }
 </style>

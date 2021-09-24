@@ -20,6 +20,10 @@ function setTokenTimeout(tokenData: IDecryptedToken) {
     store.commit(MutationTypes.SET_PREV_TOKEN_TIMEOUT, timeout);
 }
 
+function setAccessToken(accessToken: string) {
+    document.cookie = `access-token=${accessToken}`;
+}
+
 export const actions: Actions<ActionBindings, AppState, AppState> = {
     [ActionTypes.LOGIN]: async (
         { commit, dispatch, state },
@@ -36,6 +40,7 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
                 ...objForm,
                 fingerPrint: fingerPrint.visitorId,
             });
+            setAccessToken(token.data.accessToken);
             const tokenData = getDataFromJWT(token.data.accessToken);
             commit(MutationTypes.SET_TOKEN, token.data.accessToken);
             commit(MutationTypes.SET_USER_ID, tokenData.userId);
@@ -56,6 +61,8 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
                 ...form,
                 fingerPrint: fingerPrint.visitorId,
             });
+            setAccessToken(token.data.accessToken);
+
             commit(MutationTypes.SET_TOKEN, token.data.accessToken);
             const tokenData = getDataFromJWT(token.data.accessToken);
             commit(MutationTypes.SET_USER_ID, tokenData.userId);
@@ -64,7 +71,7 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
             console.log(e);
         }
     },
-    [ActionTypes.REFRESH_TOKEN]: async ({ commit, dispatch, state }) => {
+    [ActionTypes.REFRESH_TOKEN]: async ({ commit, dispatch }) => {
         try {
             const fpPromise = await FingerprintJS.load();
             const fingerPrint = await fpPromise.get();
@@ -75,6 +82,8 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
                 await dispatch(ActionTypes.LOGOUT);
                 return;
             }
+            setAccessToken(token.data.accessToken);
+
             commit(MutationTypes.SET_TOKEN, token.data.accessToken);
             const tokenData = getDataFromJWT(token.data.accessToken);
             commit(MutationTypes.SET_USER_ID, tokenData.userId);

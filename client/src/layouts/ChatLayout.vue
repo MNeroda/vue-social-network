@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex flex-column" style="position: relative">
+    <div class="view" style="position: relative">
         <navbar />
         <router-view />
     </div>

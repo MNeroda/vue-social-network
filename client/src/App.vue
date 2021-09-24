@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <div v-if="loading"></div>
-        <component v-else :is="layout"></component>
+        <component class="app" v-else :is="layout"></component>
     </v-app>
 </template>
 
@@ -37,4 +37,7 @@ export default class App extends Vue {
 <style lang="scss">
 @import '~normalize.css/normalize.css';
 @import 'styles/index.scss';
+::-webkit-scrollbar {
+    width: 0;
+}
 </style>

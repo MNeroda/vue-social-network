@@ -1,0 +1,18 @@
+@mixin scrollbar($color) {
+    color: #00000000;
+    transition: color 0.3s;
+
+    &:hover {
+        color: $color;
+    }
+
+    &::-webkit-scrollbar {
+        width: 14px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-clip: content-box;
+        border: 4px solid transparent;
+        border-radius: 15px;
+        box-shadow: inset 0 0 0 10px;
+    }
+}

@@ -8,6 +8,7 @@ import {
     UserPage,
     ChatPage,
     ProfilePage,
+    FriendsPage,
 } from '@/views';
 import store from '@/store';
 import { ActionTypes } from '@/store/types';
@@ -19,9 +20,11 @@ export enum RouteNames {
     LOGIN_PAGE = 'LOGIN_PAGE',
     REGISTER_PAGE = 'REGISTER_PAGE',
     PAGE_404 = 'PAGE_404',
+    PAGE_404_REDIRECT = 'PAGE_404',
     USER_PAGE = 'USER_PAGE',
     CHAT_PAGE = 'CHAT_PAGE',
     PROFILE_PAGE = 'PROFILE_PAGE',
+    FRIENDS_PAGE = 'FRIENDS_PAGE',
 }
 
 type RoutesType = RouteConfig & {
@@ -97,8 +100,13 @@ const routes: Array<RoutesType> = [
         },
     },
     {
+        path: '/friends',
+        name: RouteNames.FRIENDS_PAGE,
+        component: FriendsPage,
+    },
+    {
         path: '*',
-        name: RouteNames.PAGE_404,
+        name: RouteNames.PAGE_404_REDIRECT,
         redirect: '/page404',
         component: Page404,
         meta: {

@@ -1,0 +1,15 @@
+@mixin changeColorTextInput() {
+    &:not(.error--text) {
+        * {
+            color: white!important;
+        }
+        fieldset {
+            border-color: white !important;
+        }
+    }
+    &.error--text {
+        * {
+            color: $sn-main-red !important;
+        }
+    }
+}

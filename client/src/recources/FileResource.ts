@@ -1,4 +1,5 @@
 import { BaseResource } from '@/recources/BaseResource';
+import store from '@/store';
 
 import firebase from 'firebase/app';
 import 'firebase/storage';
@@ -18,16 +19,16 @@ const storage = firebase.storage();
 
 export class FileResource extends BaseResource {
     constructor() {
-        super('/api/file-service');
+        super('/api/file');
     }
 
-    async getUserAvatar(id: string) {
+    async getUserAvatar(id: string, isHaveAvatar: boolean) {
         if (id) {
-            try {
+            if (isHaveAvatar) {
                 const ref = storage.ref(`${id}/avatar.jpg`);
                 const url = await ref.getDownloadURL();
                 return url;
-            } catch (e) {
+            } else {
                 const ref = storage.ref('default-avatar.png');
                 const url = await ref.getDownloadURL();
                 return url;
@@ -35,10 +36,26 @@ export class FileResource extends BaseResource {
         }
     }
 
-    async uploadAvatar(file: any, userId: string): Promise<void> {
+    async uploadAvatar(file: any): Promise<void> {
+        if (!store.state.userId) {
+            throw new Error(
+                'Попытка установить аватар у несуществуещего пользователя'
+            );
+        }
         const blob = file.slice(0, file.size, 'image/jpg');
         const newFile = new File([blob], 'avatar.jpg', { type: 'image/jpg' });
-        console.log(newFile);
-        await storage.ref(`${userId}/avatar.jpg`).put(newFile);
+        storage.ref(`${store.state.userId}/avatar.jpg`).put(newFile);
+        this.setUserAvatar(true);
+    }
+
+    // Этот метод просто меняет поле в mongo
+    // Сама установка аватара в методе uploadAvatar
+    private setUserAvatar(isHaveAvatar: boolean) {
+        console.log('dc ', document.cookie);
+        this.axios.get('/set-user-avatar', {
+            params: {
+                isHaveAvatar,
+            },
+        });
     }
 }
