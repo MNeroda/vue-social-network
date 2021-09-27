@@ -20,9 +20,12 @@ async function start() {
             useUnifiedTopology: true,
             useCreateIndex: true,
         });
-        app.listen(5000, () => {
+        const server = app.listen(5000, () => {
             console.log(`App has been started on port ${PORT}...`);
         });
+
+        const io = require('./websocket/websocket');
+        io(server);
     } catch (e) {
         console.log(`Server error ${e.message}`);
         process.exit(1);
@@ -30,13 +33,3 @@ async function start() {
 }
 
 start();
-
-const http = require('http');
-const server = http.createServer(app);
-
-const io = require('./websocket/websocket');
-io(server);
-
-server.listen(8999, () => {
-    console.log('websocket server has been started on port ', 8999);
-});

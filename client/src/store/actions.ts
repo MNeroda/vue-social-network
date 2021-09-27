@@ -106,6 +106,6 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
         commit(MutationTypes.SET_TOKEN, '');
         commit(MutationTypes.SET_PREV_TOKEN_TIMEOUT, undefined);
         await authResource.logout();
-        Vue.$__set_websocket_token('');
+        Vue.$__close_websocket_connection();
     },
 };

@@ -16,11 +16,11 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Model } from 'vue-property-decorator';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component
 export default class SearchFriendField extends Vue {
-    @Model('input', { type: String }) searchText!: string;
+    @Prop() searchText!: string;
 }
 </script>
 
