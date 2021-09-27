@@ -2,17 +2,22 @@
     <div class="" style="position: relative">
         <navbar />
 
-        <div class="view d-flex bg-light-grey" style="gap: 25px">
-            <v-card
-                class="sidebar-auth-layout ml-3"
-                style="height: fit-content"
-            >
-                <sidebar-list-items></sidebar-list-items>
-            </v-card>
-            <div class="main-content-auth-layout mt-0" style="width: 100%">
-                <router-view></router-view>
-            </div>
-        </div>
+        <v-row class="mt-0 view bg-light-grey">
+            <v-col cols="2" class="d-flex flex-column pt-0" style="gap: 15px">
+                <v-card
+                    class="sidebar-auth-layout ml-3"
+                    style="height: fit-content"
+                >
+                    <sidebar-list-items></sidebar-list-items>
+                </v-card>
+            </v-col>
+
+            <v-col cols="10" class="d-flex flex-column pt-0" style="gap: 15px">
+                <div class="main-content-auth-layout mt-0" style="width: 100%">
+                    <router-view></router-view>
+                </div>
+            </v-col>
+        </v-row>
     </div>
 </template>
 

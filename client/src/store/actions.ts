@@ -11,6 +11,9 @@ import { IFormLogin, IFormRegister } from '@/types/user';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import { getDataFromJWT, IDecryptedToken } from '@/modules/helpers/JWTHelper';
 
+import Vue from 'vue';
+import router from '@/router';
+
 const authResource = new AuthResource();
 
 function setTokenTimeout(tokenData: IDecryptedToken) {
@@ -40,11 +43,14 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
                 ...objForm,
                 fingerPrint: fingerPrint.visitorId,
             });
-            setAccessToken(token.data.accessToken);
-            const tokenData = getDataFromJWT(token.data.accessToken);
-            commit(MutationTypes.SET_TOKEN, token.data.accessToken);
-            commit(MutationTypes.SET_USER_ID, tokenData.userId);
-            setTokenTimeout(token.data.accessToken);
+            if (token) {
+                setAccessToken(token.data.accessToken);
+                const tokenData = getDataFromJWT(token.data.accessToken);
+                commit(MutationTypes.SET_TOKEN, token.data.accessToken);
+                commit(MutationTypes.SET_USER_ID, tokenData.userId);
+                setTokenTimeout(token.data.accessToken);
+                await router.push('/');
+            }
         } catch (e) {
             console.log(e);
         }
@@ -88,6 +94,7 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
             const tokenData = getDataFromJWT(token.data.accessToken);
             commit(MutationTypes.SET_USER_ID, tokenData.userId);
             setTokenTimeout(tokenData);
+            Vue.$__set_websocket_token(token.data.accessToken);
             return;
         } catch (e) {
             await dispatch(ActionTypes.LOGOUT);
@@ -99,5 +106,6 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
         commit(MutationTypes.SET_TOKEN, '');
         commit(MutationTypes.SET_PREV_TOKEN_TIMEOUT, undefined);
         await authResource.logout();
+        Vue.$__set_websocket_token('');
     },
 };

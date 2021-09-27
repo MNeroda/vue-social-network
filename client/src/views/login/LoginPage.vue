@@ -92,7 +92,6 @@ export default class LoginPage extends Vue {
         this.isLoading = true;
         await this.$store.dispatch(ActionTypes.LOGIN, this.form);
         this.isLoading = false;
-        await this.$router.push('/');
     }
 }
 </script>

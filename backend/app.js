@@ -30,3 +30,13 @@ async function start() {
 }
 
 start();
+
+const http = require('http');
+const server = http.createServer(app);
+
+const io = require('./websocket/websocket');
+io(server);
+
+server.listen(8999, () => {
+    console.log('websocket server has been started on port ', 8999);
+});
