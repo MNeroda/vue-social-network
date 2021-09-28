@@ -14,14 +14,15 @@ router.get('/user-info', async (req, res) => {
     });
 });
 
-router.get('/get-conversations', authMiddleware, async (req, res) => {
+router.get('/conversations', authMiddleware, async (req, res) => {
     const user = await User.findById(req.userId);
+    user.populated("conversationList")
+    await user.populate("conversationList")
+        .execPopulate()
 
-    if (user.conversationList.length) {
-        return res.status(200).json({ res: [] });
-    }
+    const data = user.conversationList.map(dialog => dialog.members.filter(item => item.toString() !== req.userId)[0])
 
-    return res.status(200).json({ res: [] });
+    return res.status(200).json({ conversationArr: data });
 });
 
 module.exports = router;

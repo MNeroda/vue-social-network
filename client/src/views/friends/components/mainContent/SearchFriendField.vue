@@ -8,9 +8,6 @@
             placeholder="Введите имя"
             :aria-autocomplete="false"
         >
-            <template v-slot:append-outer>
-                <v-icon class="test" size="36px"> mdi-magnify </v-icon>
-            </template>
         </v-text-field>
     </v-form>
 </template>
@@ -25,9 +22,5 @@ export default class SearchFriendField extends Vue {
 </script>
 
 <style lang="scss">
-.find-friends-input {
-    .v-input__append-outer {
-        margin-top: 12px !important;
-    }
-}
+
 </style>

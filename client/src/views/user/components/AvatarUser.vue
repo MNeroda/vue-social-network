@@ -11,9 +11,9 @@
         <img
             v-else-if="imagePreview"
             :src="imagePreview"
-            style="max-width: 100%"
+            style="max-width: 100%; border-radius: 10px"
         />
-        <v-img v-else :src="imageURL" style="max-width: 100%">
+        <v-img v-else :src="imageURL" style="max-width: 100%; border-radius: 10px">
             <template v-slot:placeholder>
                 <v-skeleton-loader
                     width="100%"
@@ -22,7 +22,7 @@
             </template>
         </v-img>
 
-        <div>
+        <div v-if='isOwnerPage'>
             <input
                 style="display: none"
                 type="file"
@@ -39,6 +39,12 @@
                 Загрузить изображение
             </div>
         </div>
+
+
+        <div v-else class='d-flex flex-column mt-2' style='gap: 10px'>
+            <v-btn class='bg-blue white--text' style='text-transform: none' @click='sendMessage'>Написать сообщение</v-btn>
+            <v-btn class='bg-blue white--text' style='text-transform: none' @click='addToFriends'>Добавить в друзья</v-btn>
+        </div>
     </v-card>
 </template>
 
@@ -51,15 +57,14 @@ const fileResource = new FileResource();
 @Component
 export default class AvatarUser extends Vue {
     @Prop({ default: false }) isHaveAvatar!: boolean;
-    test() {
-        this.loading = false;
-    }
+    @Prop({default: false}) isOwnerPage!: boolean
+
+    userId = ''
     loading = true;
     uploadImage: File | null = null;
     imagePreview: string | ArrayBuffer | null = null;
 
-    /*imageURL: File | null = '';*/
-    imageURL: any = '';
+    imageURL: FileResource | null = null;
     downloadedImagePreview: string | ArrayBuffer | null = null;
     clickOnInputImage() {
         const ref: VueElementClickable = this.$refs
@@ -90,11 +95,22 @@ export default class AvatarUser extends Vue {
     }
 
     async mounted() {
+        if (this.isOwnerPage) this.userId = this.$store.state.userId
+        else this.userId = this.$route.params.id
+
         this.imageURL = await fileResource.getUserAvatar(
-            this.$store.state.userId,
+            this.userId,
             this.isHaveAvatar
         );
         this.loading = false;
+    }
+
+    sendMessage() {
+        this.$router.push(`/chat/${this.userId}`)
+    }
+
+    addToFriends() {
+        console.log('add to friends');
     }
 }
 </script>

@@ -2,22 +2,53 @@
     <v-card>
         <chat-messages class="messages-block" />
 
-        <div class="send-block">
-            <v-text-field placeholder="message"></v-text-field>
-        </div>
+        <v-form
+            v-model="isValid"
+            class="send-block d-flex align-center"
+            style="gap: 15px"
+            @submit.prevent
+        >
+            <div>
+                <v-text-field
+                    v-model="textMessage"
+                    class="ml-4"
+                    placeholder="Введите сообщение"
+                    style="width: 500px"
+                ></v-text-field>
+            </div>
+            <v-btn depressed class="col-blue" @click="sendMessage">
+                <v-icon size="38"> mdi-send-circle </v-icon>
+            </v-btn>
+        </v-form>
     </v-card>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
+import { Component, Model, Vue } from 'vue-property-decorator';
 import ChatMessages from '@/views/chat/components/ChatMessages.vue';
+import { validators } from '@/modules/validators';
+import { emitSocketsEvent } from '@/types/socketEvents';
+
 @Component({
     components: { ChatMessages },
 })
 export default class ChatContent extends Vue {
-    @Watch('$route', { immediate: true, deep: true })
-    logRouteParams() {
-        console.log(this.$route.params.id);
+    @Model('update') isNewDialog!: boolean
+    textMessage = '';
+
+    required = [validators.required('Необходимо ввести сообщение')];
+    isValid = true;
+
+    sendMessage() {
+        if (!this.textMessage) {
+            return
+        }
+        if (this.isNewDialog) {
+            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_NEW_DIALOG, {message: this.textMessage, toId: this.$route.params.id})
+            this.$emit('update', !this.isNewDialog)
+        } else {
+            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_EXIST_DIALOG, {message: this.textMessage, toId: this.$route.params.id})
+        }
     }
 }
 </script>

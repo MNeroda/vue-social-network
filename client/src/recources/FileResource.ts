@@ -22,7 +22,7 @@ export class FileResource extends BaseResource {
         super('/api/file');
     }
 
-    async getUserAvatar(id: string, isHaveAvatar: boolean) {
+    async getUserAvatar(id: string, isHaveAvatar = true) {
         if (id) {
             if (isHaveAvatar) {
                 const ref = storage.ref(`${id}/avatar.jpg`);

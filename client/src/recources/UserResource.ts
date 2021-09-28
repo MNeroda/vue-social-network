@@ -14,4 +14,9 @@ export class UserResource extends BaseResource {
             })
             .then((res) => res.data);
     }
+
+    async getConversation(): Promise<any> {
+        return this.axios.get('conversations')
+            .then((res) => res.data)
+    }
 }

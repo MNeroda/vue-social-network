@@ -14,7 +14,7 @@
 
             <v-col cols="10" class="d-flex flex-column pt-0" style="gap: 15px">
                 <div class="main-content-auth-layout mt-0" style="width: 100%">
-                    <router-view></router-view>
+                    <router-view :key='$route.path'></router-view>
                 </div>
             </v-col>
         </v-row>

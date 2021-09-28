@@ -3,11 +3,9 @@ const { Schema, model, Types } = require('mongoose');
 const schema = new Schema({
     members: [
         {
-            member: {
-                type: Types.ObjectId,
-                ref: 'User',
-            },
-        },
+            type: Types.ObjectId,
+            ref: 'User',
+        }
     ],
     messages: [
         {
@@ -34,6 +32,10 @@ const schema = new Schema({
         senderId: {
             type: Types.ObjectId,
         },
+        date: {
+            type: Date,
+            default: Date.now()
+        }
     },
 });
 

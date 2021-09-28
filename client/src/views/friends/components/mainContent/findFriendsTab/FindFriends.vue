@@ -4,43 +4,32 @@
             :searchText="searchText"
             @input="changeSearchHandler"
         />
-        <v-btn @click="test"></v-btn>
-        <h1>{{ socketBack }}</h1>
+        <hr v-if='friendsList.length' class='sn-divider'>
+        <div class='my-4 mx-8' v-for='friend of friendsList' :key='friend.id'>
+            <friend-card :friend='friend'/>
+            <hr class='mt-4 mb-7 sn-divider' style='width: 90%'>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import SearchFriendField from '@/views/friends/components/mainContent/SearchFriendField.vue';
+import { SearchFriendField, FriendCard } from '@/views/friends/components/mainContent';
 import { emitSocketsEvent, onSocketsEvent } from '@/types/socketEvents';
+import { FindUserWebsocket } from '@/types/resources/websocket';
 
 @Component({
-    components: { SearchFriendField },
+    components: { FriendCard, SearchFriendField },
 })
 export default class FindFriends extends Vue {
     searchText = '';
-
-    socketBack = '';
-
-    friendsList: any[] = [];
-    @Watch('friendsList', { deep: true })
-    tmpFunc() {
-        console.log(this.friendsList);
-    }
-
-    test() {
-        //testFromBack
-        this.$socket.emit(emitSocketsEvent.TEST_FROM_FRONT, '');
-    }
+    friendsList: FindUserWebsocket[] = [];
 
     changeSearchHandler(event: string) {
         this.$socket.emit(emitSocketsEvent.FIND_FRIENDS_BY_NAME, event);
     }
 
     mounted() {
-        this.$socket.on(onSocketsEvent.TEST_FROM_BACK, (data: any) => {
-            this.socketBack = data;
-        });
         this.$socket.on(onSocketsEvent.SET_FRIENDS_BY_NAME, (data: any) => {
             this.friendsList = data;
         });

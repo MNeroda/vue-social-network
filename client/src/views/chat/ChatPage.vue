@@ -1,25 +1,30 @@
 <template>
     <div class="view bg-light-grey">
         <div class="tmp d-flex pl-2 pr-4 pb-1" style="gap: 15px">
-            <chat-list style="flex: 2"></chat-list>
-            <chat-content style="flex: 14"></chat-content>
+            <chat-list style="flex: 1"></chat-list>
+            <chat-content :isNewDialog='isNewDialog' style="flex: 7" @update='isNewDialog = $event'></chat-content>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import ChatList from '@/views/chat/components/ChatList.vue';
 import ChatContent from '@/views/chat/components/ChatContent.vue';
+import { UserResource } from '@/recources/UserResource';
 
+const userResource = new UserResource()
 @Component({
     components: { ChatContent, ChatList },
 })
 export default class ChatPage extends Vue {
-    /*    @Watch('$route',  { immediate: true, deep: true })
-    logRouteParams() {
-        console.log(this.$route.params.id);
-    }*/
+    listDialogs: string[] = []
+    isNewDialog = true
+
+    async mounted() {
+        const {conversationArr} = await userResource.getConversation()
+        this.isNewDialog = !(conversationArr.includes(this.$route.params.id))
+    }
 }
 </script>
 

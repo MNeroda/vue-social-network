@@ -18,23 +18,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { UserResource } from '@/recources/UserResource';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { IUserInfo } from '@/types/resources/userResource';
 
-const userResource = new UserResource();
 @Component
 export default class InfoUser extends Vue {
-    info = {
-        email: '',
-        name: '',
-        phone: '',
-    };
-    async mounted() {
-        const res = await userResource.getUserInfo(this.$store.state.userId);
+    @Prop() info!: IUserInfo
 
-        this.info.email = res.email;
-        this.info.name = res.name;
-        this.info.phone = res.phone;
-    }
+
 }
 </script>
