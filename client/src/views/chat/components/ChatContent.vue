@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Model, Vue } from 'vue-property-decorator';
+import { Component, Model, ModelSync, Prop, Vue } from 'vue-property-decorator';
 import ChatMessages from '@/views/chat/components/ChatMessages.vue';
 import { validators } from '@/modules/validators';
 import { emitSocketsEvent } from '@/types/socketEvents';
@@ -33,7 +33,8 @@ import { emitSocketsEvent } from '@/types/socketEvents';
     components: { ChatMessages },
 })
 export default class ChatContent extends Vue {
-    @Model('update') isNewDialog!: boolean
+    @Prop() isNewDialog!: boolean
+    @Prop() dialogId!: string
     textMessage = '';
 
     required = [validators.required('Необходимо ввести сообщение')];
@@ -44,10 +45,9 @@ export default class ChatContent extends Vue {
             return
         }
         if (this.isNewDialog) {
-            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_NEW_DIALOG, {message: this.textMessage, toId: this.$route.params.id})
-            this.$emit('update', !this.isNewDialog)
+            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_NEW_DIALOG, {message: this.textMessage, toId: this.dialogId})
         } else {
-            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_EXIST_DIALOG, {message: this.textMessage, toId: this.$route.params.id})
+            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_EXIST_DIALOG, {message: this.textMessage, toId: this.dialogId})
         }
     }
 }

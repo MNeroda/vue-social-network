@@ -17,6 +17,6 @@ export class UserResource extends BaseResource {
 
     async getConversation(): Promise<any> {
         return this.axios.get('conversations')
-            .then((res) => res.data)
+            .then((res) => res.data.conversationArr)
     }
 }

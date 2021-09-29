@@ -1,5 +1,7 @@
 export enum onSocketsEvent {
     SET_FRIENDS_BY_NAME = 'SET_FRIENDS_BY_NAME',
+    NEW_DIALOG = 'NEW_DIALOG',
+    NEW_MESSAGE = 'NEW_MESSAGE'
 }
 
 export enum emitSocketsEvent {
