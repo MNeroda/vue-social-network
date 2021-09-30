@@ -1,11 +1,18 @@
 $sn-main-light-grey: #e0e0e0;
+$sn-main-lightest-grey: #efefef;
 $sn-main-blue: #2196f3;
 $sn-main-orange: #f57f17;
 $sn-main-grey: #bdbdbd;
+$sn-main-dark-grey: #696969;
 $sn-main-red: #ff5252;
+$sn-green-message: #eeffde;
 
 .bg-light-grey {
     background: $sn-main-light-grey !important;
+}
+
+.bg-lightest-grey {
+    background: $sn-main-lightest-grey !important;
 }
 
 .bg-blue {
@@ -16,8 +23,13 @@ $sn-main-red: #ff5252;
     background: $sn-main-orange!important;
 }
 
+
 .bg-grey {
     background: $sn-main-grey!important;
+}
+
+.bg-dark-grey {
+    background: $sn-main-dark-grey!important;
 }
 
 .bg-red {
@@ -33,6 +45,10 @@ $sn-main-red: #ff5252;
     color: $sn-main-light-grey !important;
 }
 
+.col-lightest-grey {
+    color: $sn-main-lightest-grey !important;
+}
+
 .col-blue {
     color: $sn-main-blue!important;
 }
@@ -43,6 +59,10 @@ $sn-main-red: #ff5252;
 
 .col-grey {
     color: $sn-main-grey!important;
+}
+
+.col-dark-grey {
+    color: $sn-main-dark-grey!important;
 }
 
 .col-red {

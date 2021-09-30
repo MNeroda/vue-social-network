@@ -1,0 +1,9 @@
+@mixin word-hide-mixin($line-clamp: 3) {
+    display: inline;
+    -webkit-line-clamp: $line-clamp;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+}

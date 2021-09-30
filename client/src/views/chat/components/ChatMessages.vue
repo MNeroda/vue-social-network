@@ -1,75 +1,31 @@
 <template>
     <div class="pa-4">
-        <h3>Content</h3>
-        <h2>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquid
-            autem beatae dolorem, ea explicabo facere facilis fugiat, in
-            inventore itaque minima obcaecati officiis optio perferendis
-            perspiciatis porro possimus, quaerat quas quo quod ratione
-            recusandae repudiandae rerum saepe soluta temporibus ullam unde vel
-            voluptatibus. Aliquid aperiam commodi cumque cupiditate debitis
-            distinctio, enim esse eveniet excepturi exercitationem in itaque
-            minima natus necessitatibus nesciunt nostrum numquam officiis omnis
-            praesentium, quae quam quia quis quod reiciendis reprehenderit saepe
-            sapiente sunt suscipit temporibus totam ut vel veniam voluptate.
-            Aspernatur, est excepturi iusto libero omnis optio reprehenderit
-            sapiente. A autem dolorum illum, labore laboriosam numquam quasi
-            quibusdam, rerum tempore temporibus unde ut. Accusamus autem dolores
-            explicabo facere labore laudantium molestias pariatur quia
-            voluptatem. Aliquid assumenda delectus distinctio ducimus enim
-            error, exercitationem explicabo, fuga fugiat laudantium magni neque
-            nisi, praesentium quia quisquam rem saepe sapiente similique? Cumque
-            cupiditate dolores facilis illo libero magnam, natus tempora tempore
-            voluptas voluptatem. Aliquam aliquid aut dolor explicabo facere hic
-            inventore iste laboriosam, laborum magni nisi non pariatur quisquam
-            quod recusandae rerum sapiente veritatis voluptatum? Animi dolores,
-            eius inventore, iure laboriosam mollitia necessitatibus nisi
-            perferendis quibusdam repellendus, suscipit ut voluptas voluptatem!
-            Aut doloremque eos expedita illo inventore ipsum itaque labore
-            laudantium magni neque odit, optio possimus provident quo, quod
-            ratione reprehenderit repudiandae similique voluptas voluptate?
-            Aspernatur commodi ex explicabo inventore labore laboriosam nesciunt
-            odit perspiciatis reiciendis, repellendus, repudiandae ut vel,
-            vitae? Assumenda consectetur culpa doloremque doloribus eius, est
-            et, fugit in nam numquam odio officiis perspiciatis praesentium qui
-            quisquam, ratione sunt? Adipisci aliquid aperiam aspernatur at,
-            beatae culpa dolorem doloremque dolorum eaque exercitationem ipsa
-            ipsam laboriosam nostrum omnis pariatur quaerat quas quasi qui quos
-            ratione rem sed sequi tempora tempore tenetur velit voluptatem
-            voluptatum. Adipisci amet aperiam architecto, asperiores deleniti
-            deserunt dolor doloribus ducimus, expedita impedit inventore maiores
-            nemo nesciunt nulla numquam provident quasi quis quos recusandae
-            similique sint tempore voluptates! Doloremque, harum libero
-            obcaecati officia quasi totam. Consectetur dolor impedit magni
-            tempora vero. Accusamus alias amet atque blanditiis cumque deserunt
-            dolor harum illum, in inventore iste iure maiores molestiae mollitia
-            natus neque nihil non nulla officiis placeat quae quasi sunt tenetur
-            unde ut, veniam vero. Deserunt labore maiores natus obcaecati odit
-            sint! Fugiat, minima, officiis. A adipisci aspernatur assumenda aut
-            consequatur corporis cum cumque deserunt dicta dolor doloremque ea
-            eius eos eveniet excepturi exercitationem fugit id in ipsa iusto
-            laboriosam maxime minima natus nulla officiis pariatur, quae quam
-            quasi quia quidem quos recusandae reiciendis repellat saepe, tempora
-            velit, veritatis? Numquam omnis placeat quidem repellat voluptate.
-            Beatae consectetur consequatur, earum error fugit maiores molestias,
-            nulla placeat reprehenderit sed unde veniam? Aliquam aspernatur,
-            assumenda atque dicta, doloremque ea, eaque enim est excepturi
-            inventore ipsa labore libero nisi nobis obcaecati perspiciatis saepe
-            totam unde voluptate voluptatibus. A alias animi architecto
-            asperiores, at atque deserunt dicta ducimus ea enim eos est
-            exercitationem explicabo facere minus molestiae, nam natus nihil
-            officia omnis optio perspiciatis, placeat quae quas quis repudiandae
-            rerum saepe similique sunt vel! Beatae blanditiis consequuntur enim
-            hic ipsum nisi omnis quam quibusdam, quidem.
-        </h2>
+        <h1 v-if='!$route.params.id'>CHOOSE DIALOG</h1>
+        <h1 v-else-if='!isCorrectUrl'>INCORRECT URL</h1>
+        <h1 v-else-if='loading'>LOADING</h1>
+        <div v-else v-for='message of messages' :key='message._id' class='d-flex flex-column'>
+            <div>
+                <div class='mt-2' :class='{"my-message": isMyMessage(message.senderId), "friend-message": !isMyMessage(message.senderId)}' >
+                    {{message.value}}
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component
-export default class ChatMessages extends Vue {}
+export default class ChatMessages extends Vue {
+    @Prop() loading!: boolean
+    @Prop() isCorrectUrl!: boolean
+    @Prop() messages!: any[]
+
+    isMyMessage(messageId: string) {
+        return messageId === this.$store.state.userId
+    }
+}
 </script>
 
 <style scoped lang="scss">
@@ -77,6 +33,79 @@ export default class ChatMessages extends Vue {}
     color: black;
 }
 
-.content {
+.my-message {
+    min-width: 300px;
+    max-width: 800px;
+    margin-right: 10px;
+    float: right;
+    background: $sn-green-message;
+    padding: 1em 1.5em;
+    border-radius: 10px 10px 0 10px;
+    position: relative;
+    line-height: 1.5em;
+
+    &:after {
+        content: "";
+        position: absolute;
+        left: 100%;
+        bottom: .1em;
+        width: 1.8em;
+        height: 1.8em;
+        border: .5em solid white;
+        border-radius: 50%;
+        background: white;
+    }
+    &:before {
+        content: "";
+        position: absolute;
+        left: 100%;
+        bottom: 0;
+        width: 1.8em;
+        border-radius: 50%;
+        border-top: none;
+        height: .9em;
+        border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        background: $sn-green-message;
+        border-color: silver;
+        margin-left: -.9em;
+    }
+}
+
+
+.friend-message {
+    margin-left: 10px;
+    width: 500px;
+    margin-right: 10px;
+    background: $sn-main-grey;
+    padding: 1em 1.5em;
+    border-radius: 10px 10px 10px 0 ;
+    position: relative;
+    line-height: 1.5em;
+
+    &:after {
+        content: "";
+        position: absolute;
+        right: 100%;
+        bottom: .1em;
+        width: 1.8em;
+        height: 1.8em;
+        border: .5em solid white;
+        border-radius: 50%;
+        background: white;
+    }
+    &:before {
+        content: "";
+        position: absolute;
+        right: 100%;
+        bottom: 0;
+        width: 1.8em;
+        border-radius: 50%;
+        border-top: none;
+        height: .9em;
+        border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        background: $sn-main-grey;
+        border-color: $sn-main-grey;
+        margin-right: -.9em;
+    }
 }
 </style>

@@ -16,7 +16,15 @@ export class UserResource extends BaseResource {
     }
 
     async getConversation(): Promise<any> {
-        return this.axios.get('conversations')
-            .then((res) => res.data.conversationArr)
+        return this.axios
+            .get('conversations')
+            .then((res) => res.data.conversationArr);
+    }
+
+    async getMessagesByChatId(id: string): Promise<any> {
+        return this.axios
+            .get('messages-by-id', {
+                params: { id },
+            })
     }
 }

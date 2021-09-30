@@ -1,9 +1,9 @@
 <template>
     <v-card>
-        <chat-messages class="messages-block" />
+        <chat-info :userInfo='userInfo'/>
+        <chat-messages :loading='loading' :isCorrectUrl='isCorrectUrl' :messages='messages' class="messages-block" />
 
         <v-form
-            v-model="isValid"
             class="send-block d-flex align-center"
             style="gap: 15px"
             @submit.prevent
@@ -14,6 +14,7 @@
                     class="ml-4"
                     placeholder="Введите сообщение"
                     style="width: 500px"
+                    :aria-autocomplete='false'
                 ></v-text-field>
             </div>
             <v-btn depressed class="col-blue" @click="sendMessage">
@@ -24,21 +25,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Model, ModelSync, Prop, Vue } from 'vue-property-decorator';
-import ChatMessages from '@/views/chat/components/ChatMessages.vue';
-import { validators } from '@/modules/validators';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import {ChatMessages} from '@/views/chat/components';
 import { emitSocketsEvent } from '@/types/socketEvents';
+import { UserResource } from '@/recources/UserResource';
+import ChatInfo from '@/views/chat/components/ChatInfo.vue';
 
+const userResource = new UserResource()
 @Component({
-    components: { ChatMessages },
+    components: { ChatInfo, ChatMessages },
 })
 export default class ChatContent extends Vue {
     @Prop() isNewDialog!: boolean
     @Prop() dialogId!: string
-    textMessage = '';
+    @Prop() userInfo!: any
 
-    required = [validators.required('Необходимо ввести сообщение')];
-    isValid = true;
+    messages: any[] = []
+    textMessage = '';
+    loading = true;
+    isCorrectUrl = true
 
     sendMessage() {
         if (!this.textMessage) {
@@ -49,14 +54,33 @@ export default class ChatContent extends Vue {
         } else {
             this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_EXIST_DIALOG, {message: this.textMessage, toId: this.dialogId})
         }
+        this.textMessage = ''
+    }
+
+    pushMessage(newMessage: any) {
+        this.messages.push(newMessage)
+    }
+
+    async mounted() {
+        try {
+            const res = await userResource.getMessagesByChatId(this.dialogId)
+            this.loading = false
+            this.messages = res.data.messages
+        } catch (e) {
+            this.loading = false
+            this.isCorrectUrl = false
+            this.messages = []
+        }
+        this.$emit('funcPushMessage', this.pushMessage)
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .messages-block {
-    overflow: auto;
-    height: calc(100% - #{$block-send-message-height});
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: calc(100% - #{$block-send-message-height} - #{$dialog-info-height});
 
     @include scrollbar($sn-main-grey);
 }

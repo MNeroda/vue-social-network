@@ -1,11 +1,15 @@
 <template>
     <div class="view bg-light-grey">
+        <chat-skeleton-loader v-if='loading'/>
         <div class="tmp d-flex pl-2 pr-4 pb-1" style="gap: 15px">
-            <chat-list style="flex: 1"></chat-list>
+            <chat-list :conversations='listConversations' style="flex: 1"></chat-list>
             <chat-content
+                :userInfo='userInfoFromListConversation'
+                :key='dialogId'
                 :isNewDialog="isNewDialog"
                 :dialogId='dialogId'
                 style="flex: 7"
+                @funcPushMessage='updatePushMessageHandler'
             ></chat-content>
         </div>
     </div>
@@ -17,16 +21,30 @@ import ChatList from '@/views/chat/components/ChatList.vue';
 import ChatContent from '@/views/chat/components/ChatContent.vue';
 import { UserResource } from '@/recources/UserResource';
 import { onSocketsEvent } from '@/types/socketEvents';
+import ChatSkeletonLoader from '@/views/chat/ChatSkeletonLoader.vue';
 
 const userResource = new UserResource();
 @Component({
-    components: { ChatContent, ChatList },
+    components: { ChatSkeletonLoader, ChatContent, ChatList },
 })
 export default class ChatPage extends Vue {
     listDialogs: string[] = [];
     isNewDialog = true;
     dialogId = '';
     conversationArr: any[] = []
+    loading = true
+
+    pushMessage: ((message: any) => void) | null = null
+    updatePushMessageHandler(func: (message: any) => void) {
+        this.pushMessage = func
+    }
+
+    get userInfoFromListConversation() {
+        if (this.listConversations.length) {
+            return this.listConversations.filter(conversation => conversation?.linkTo === this.$route.params.id)[0]
+        }
+        return null
+    }
 
     get listConversations() {
         return this.conversationArr.map((conversation: any) => {
@@ -34,7 +52,8 @@ export default class ChatPage extends Vue {
                 return {
                     name: conversation.members[0].name,
                     linkTo: conversation.members[0].id,
-
+                    isHaveAvatar: conversation.members[0].isHaveAvatar,
+                    id: conversation.members[0].id,
                 }
             } else {
                 //todo сделать логику для групп
@@ -44,9 +63,31 @@ export default class ChatPage extends Vue {
         })
     }
 
+    @Watch('$route.params.id')
+    changeConversationId() {
+        let indexConversation = -1;
+        this.conversationArr.map((conversation: any, index: number) => {
+            if (conversation.id === this.$route.params.id) {
+                indexConversation = index
+            }
+            if(conversation.members.map((member: any) => member.id).includes(this.$route.params.id)) {
+                indexConversation = index
+            }
+        })
+
+        if (indexConversation > -1) {
+            this.isNewDialog = false
+            this.dialogId = this.conversationArr[indexConversation].id
+        } else {
+            this.isNewDialog = true
+            this.dialogId = this.$route.params.id
+        }
+    }
+
+
     async mounted() {
         this.conversationArr = await userResource.getConversation();
-        console.log('car ', this.conversationArr);
+        this.loading = false
         let indexConversation = -1;
 
         this.conversationArr.map((conversation: any, index: number) => {
@@ -66,8 +107,6 @@ export default class ChatPage extends Vue {
             this.dialogId = this.$route.params.id
         }
 
-        console.log('flag ', this.dialogId);
-
 
         this.$socket.on(onSocketsEvent.NEW_DIALOG, (data: any) => {
             console.log('dialog ', data);
@@ -77,12 +116,18 @@ export default class ChatPage extends Vue {
 
         this.$socket.on(onSocketsEvent.NEW_MESSAGE, (data: any) => {
             console.log('new mess ', data);
+            if (this.pushMessage) {
+                this.pushMessage(data)
+            } else {
+                throw new Error("Не передана функция pushMessage")
+            }
         })
     }
 }
 </script>
 
 <style lang="scss" scoped>
+
 .view {
     position: absolute;
     top: $header-height;

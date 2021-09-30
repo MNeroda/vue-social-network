@@ -122,8 +122,7 @@ const createWebsocket = (server) => {
         })
 
         socket.on('disconnect', async () => {
-            console.log('disconnect');
-            /*await User.findOneAndUpdate({_id: userId}, {$set: {socketId: null}}, {useFindAndModify: false})*/
+            await User.findOneAndUpdate({_id: userId}, {$set: {socketId: null}}, {useFindAndModify: false})
         });
     });
 };
