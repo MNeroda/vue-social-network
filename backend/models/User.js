@@ -31,6 +31,12 @@ const schema = new Schema({
             ref: 'User',
         },
     ],
+    requestFriendsList: [
+        {
+            type: Types.ObjectId,
+            ref: 'User',
+        },
+    ],
     socketId: {
         type: String,
         default: null,

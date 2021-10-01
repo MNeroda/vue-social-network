@@ -91,7 +91,6 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import { validators } from '@/modules/validators';
 import { VForm } from '@/types/VForm';
 import { IFormRegister } from '@/types/user';
-import { mapActions } from 'vuex';
 import { ActionTypes } from '@/store/types';
 
 @Component

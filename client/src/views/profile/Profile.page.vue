@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { ActionTypes, MutationTypes } from '@/store/types';
+import { ActionTypes } from '@/store/types';
 
 @Component
 export default class ProfilePage extends Vue {

@@ -80,11 +80,7 @@ export default class LoginPage extends Vue {
         return this.$refs.formRef as VForm;
     }
 
-    async test() {
-        await this.$store.dispatch(ActionTypes.REFRESH_TOKEN);
-    }
-
-    async submitHandler() {
+    async submitHandler(): Promise<void> {
         if (!this.isValid) {
             this.formRef.validate();
             return;

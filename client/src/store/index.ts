@@ -11,6 +11,7 @@ export default new Vuex.Store<AppState>({
         token: '',
         prevTokenTimeout: undefined, //предыдущий таймаут нужен чтобы в случае логаута отменились обновления токенов
         userId: '',
+        friendsList: null,
     },
     actions,
     mutations,

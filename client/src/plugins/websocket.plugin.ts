@@ -1,6 +1,9 @@
 import { io, Socket } from 'socket.io-client';
 import _Vue from 'vue';
+import store from '../store';
 import { emitSocketsEvent, onSocketsEvent } from '@/types/socketEvents';
+import { MutationTypes } from '@/store/types';
+import { Vue } from 'vue-property-decorator';
 
 const wsPlugin = {
     install(Vue: typeof _Vue) {
@@ -35,6 +38,29 @@ const wsPlugin = {
                     auth: { token },
                 });
                 isAuth = true;
+
+                //Глобальные слушатели
+                socket.on(
+                    onSocketsEvent.MESSAGE,
+                    ({
+                        message,
+                        messageType,
+                    }: {
+                        message: string;
+                        messageType: string;
+                    }) => {
+                        Vue.$toast.open({
+                            message,
+                            type: messageType || 'default',
+                        });
+                    }
+                );
+                socket.on(
+                    onSocketsEvent.NEW_FRIEND_PUSH_TO_STORE,
+                    (id: string) => {
+                        store.commit(MutationTypes.PUSH_FRIENDS_LIST, id);
+                    }
+                );
             } else {
                 socket = null;
                 isAuth = false;
@@ -57,6 +83,7 @@ declare module 'vue/types/vue' {
         $socket: {
             on: (event: onSocketsEvent, callback: any) => void;
             emit: (event: emitSocketsEvent, data: any) => void;
+            off: (event: onSocketsEvent, callback: any) => void;
         };
     }
 

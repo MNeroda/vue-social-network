@@ -13,8 +13,10 @@ import { getDataFromJWT, IDecryptedToken } from '@/modules/helpers/JWTHelper';
 
 import Vue from 'vue';
 import router from '@/router';
+import { UserResource } from '@/recources/UserResource';
 
 const authResource = new AuthResource();
+const userResource = new UserResource();
 
 function setTokenTimeout(tokenData: IDecryptedToken) {
     const timeout = setTimeout(() => {
@@ -49,6 +51,11 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
                 commit(MutationTypes.SET_TOKEN, token.data.accessToken);
                 commit(MutationTypes.SET_USER_ID, tokenData.userId);
                 setTokenTimeout(token.data.accessToken);
+
+                const friendsList = await userResource.getFriendsListById(
+                    tokenData.userId
+                );
+                commit(MutationTypes.SET_FRIENDS_LIST, friendsList);
                 await router.push('/');
             }
         } catch (e) {
@@ -73,11 +80,12 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
             const tokenData = getDataFromJWT(token.data.accessToken);
             commit(MutationTypes.SET_USER_ID, tokenData.userId);
             setTokenTimeout(token.data.accessToken);
+            commit(MutationTypes.SET_FRIENDS_LIST, []);
         } catch (e) {
             console.log(e);
         }
     },
-    [ActionTypes.REFRESH_TOKEN]: async ({ commit, dispatch }) => {
+    [ActionTypes.REFRESH_TOKEN]: async ({ commit, dispatch, state }) => {
         try {
             const fpPromise = await FingerprintJS.load();
             const fingerPrint = await fpPromise.get();
@@ -95,6 +103,13 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
             commit(MutationTypes.SET_USER_ID, tokenData.userId);
             setTokenTimeout(tokenData);
             Vue.$__set_websocket_token(token.data.accessToken);
+
+            if (state.friendsList === null) {
+                const friendsList = await userResource.getFriendsListById(
+                    tokenData.userId
+                );
+                commit(MutationTypes.SET_FRIENDS_LIST, friendsList);
+            }
             return;
         } catch (e) {
             await dispatch(ActionTypes.LOGOUT);
@@ -105,6 +120,8 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
     [ActionTypes.LOGOUT]: async ({ commit }) => {
         commit(MutationTypes.SET_TOKEN, '');
         commit(MutationTypes.SET_PREV_TOKEN_TIMEOUT, undefined);
+        commit(MutationTypes.SET_USER_ID, '');
+        commit(MutationTypes.PUSH_FRIENDS_LIST, []);
         await authResource.logout();
         Vue.$__close_websocket_connection();
     },

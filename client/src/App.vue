@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { default as AuthorizedLayout } from '@/layouts/AuthorizedLayout.vue';
 import { default as UnauthorizedLayout } from '@/layouts/UnauthorizedLayout.vue';
 import { default as ChatLayout } from '@/layouts/ChatLayout.vue';
@@ -39,5 +39,8 @@ export default class App extends Vue {
 @import 'styles/index.scss';
 ::-webkit-scrollbar {
     width: 0;
+}
+* {
+    box-sizing: border-box !important;
 }
 </style>

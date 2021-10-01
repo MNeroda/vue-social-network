@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex" style="gap: 20px">
-        <div style='cursor: pointer' @click='moveToUserPage'>
+        <div style="cursor: pointer" @click="moveToUserPage">
             <v-img
                 v-if="urlAvatar"
                 :src="urlAvatar"
@@ -17,14 +17,20 @@
         </div>
 
         <div class="d-flex flex-column mt-3">
-            <h5 class="ml-2" style="font-size: 18px; cursor: pointer" @click='moveToUserPage'>
+            <h5
+                class="ml-2"
+                style="font-size: 18px; cursor: pointer"
+                @click="moveToUserPage"
+            >
                 {{ friend.name }}
             </h5>
             <div class="d-flex mt-4" style="gap: 10px">
-                <span class="actions-friend-card col-blue" @click='moveToChat'
+                <span class="actions-friend-card col-blue" @click="moveToChat"
                     >Написать сообщение</span
                 >
-                <span class="actions-friend-card col-blue" @click='moveToUserPage'
+                <span
+                    class="actions-friend-card col-blue"
+                    @click="moveToUserPage"
                     >Открыть профиль</span
                 >
             </div>
@@ -43,15 +49,15 @@ export default class FriendCard extends Vue {
     @Prop() friend!: FindUserWebsocket;
     urlAvatar = '';
 
-    moveToUserPage() {
-        this.$router.push(`/user/${this.friend.id}`)
+    moveToUserPage(): void {
+        this.$router.push(`/user/${this.friend.id}`);
     }
 
-    moveToChat() {
-        this.$router.push(`/chat/${this.friend.id}`)
+    moveToChat(): void {
+        this.$router.push(`/chat/${this.friend.id}`);
     }
 
-    async mounted() {
+    async mounted(): Promise<void> {
         if (this.friend.isHaveAvatar) {
             this.urlAvatar = await fileResource.getUserAvatar(this.friend.id);
         }

@@ -4,6 +4,32 @@ const authMiddleware = require('../middleware/auth.middleware.js');
 
 const router = new Router();
 
+router.get('/friends-list', async (req, res) => {
+    const user = await User.findById(req.query.id);
+    user.populated('friendsList');
+    await user.populate('friendsList').execPopulate();
+    const data = user.friendsList.map((user) => ({
+        id: user._id,
+        name: user.name,
+        isHaveAvatar: user.isHaveAvatar,
+    }));
+    return res.status(200).json(data);
+});
+
+router.get('/friends-request', authMiddleware, async (req, res) => {
+    const user = await User.findById(req.userId);
+    user.populated('requestFriendsList');
+    await user.populate('requestFriendsList').execPopulate();
+
+    return res.status(200).json(
+        user.requestFriendsList.map((user) => ({
+            id: user._id,
+            name: user.name,
+            isHaveAvatar: user.isHaveAvatar,
+        }))
+    );
+});
+
 router.get('/user-info', async (req, res) => {
     const user = await User.findById(req.query.id);
     return res.status(200).json({
@@ -51,12 +77,16 @@ router.get('/messages-by-id', authMiddleware, async (req, res) => {
 
     user.populated('conversationList');
     await user.populate('conversationList').execPopulate();
-    const currentConversation = user.conversationList.filter(conversation => conversation._id.toString() === req.query.id)
+    const currentConversation = user.conversationList.filter(
+        (conversation) => conversation._id.toString() === req.query.id
+    );
     if (currentConversation.length) {
-        const messages = currentConversation.map(conversation => conversation.messages)[0]
-        return res.status(200).json({messages})
+        const messages = currentConversation.map(
+            (conversation) => conversation.messages
+        )[0];
+        return res.status(200).json({ messages });
     }
-    return res.status(404).json({})
+    return res.status(404).json({});
 });
 
 module.exports = router;

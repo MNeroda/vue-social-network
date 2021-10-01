@@ -13,7 +13,11 @@
             :src="imagePreview"
             style="max-width: 100%; border-radius: 10px"
         />
-        <v-img v-else :src="imageURL" style="max-width: 100%; border-radius: 10px">
+        <v-img
+            v-else
+            :src="imageURL"
+            style="max-width: 100%; border-radius: 10px"
+        >
             <template v-slot:placeholder>
                 <v-skeleton-loader
                     width="100%"
@@ -22,7 +26,7 @@
             </template>
         </v-img>
 
-        <div v-if='isOwnerPage'>
+        <div v-if="isOwnerPage">
             <input
                 style="display: none"
                 type="file"
@@ -40,50 +44,59 @@
             </div>
         </div>
 
-
-        <div v-else class='d-flex flex-column mt-2' style='gap: 10px'>
-            <v-btn class='bg-blue white--text' style='text-transform: none' @click='sendMessage'>Написать сообщение</v-btn>
-            <v-btn class='bg-blue white--text' style='text-transform: none' @click='addToFriends'>Добавить в друзья</v-btn>
+        <div v-else class="d-flex flex-column mt-2" style="gap: 10px">
+            <v-btn
+                class="bg-blue white--text"
+                style="text-transform: none"
+                @click="sendMessage"
+                >Написать сообщение</v-btn
+            >
+            <v-btn
+                class="bg-blue white--text"
+                style="text-transform: none"
+                @click="addToFriends"
+                >Добавить в друзья</v-btn
+            >
         </div>
     </v-card>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { FileResource } from '@/recources/FileResource';
-import { VueElementClickable, GenericEvent } from '@/types/events';
+import { GenericEvent, VueElementClickable } from '@/types/events';
+import { emitSocketsEvent } from '@/types/socketEvents';
 
 const fileResource = new FileResource();
 @Component
 export default class AvatarUser extends Vue {
     @Prop({ default: false }) isHaveAvatar!: boolean;
-    @Prop({default: false}) isOwnerPage!: boolean
+    @Prop({ default: false }) isOwnerPage!: boolean;
 
-    userId = ''
+    userId = '';
     loading = true;
     uploadImage: File | null = null;
     imagePreview: string | ArrayBuffer | null = null;
 
     imageURL: FileResource | null = null;
     downloadedImagePreview: string | ArrayBuffer | null = null;
-    clickOnInputImage() {
-        const ref: VueElementClickable = this.$refs
-            .file! as VueElementClickable;
+    clickOnInputImage(): void {
+        const ref: VueElementClickable = this.$refs.file as VueElementClickable;
         ref.click();
     }
 
-    changeImageHandler(e: GenericEvent<HTMLInputElement>) {
-        if (!e.target.files!.length) {
+    changeImageHandler(e: GenericEvent<HTMLInputElement>): void {
+        if (!e.target?.files?.length) {
             this.uploadImage = null;
         } else {
-            this.uploadImage = e.target.files![0];
+            this.uploadImage = e.target.files[0];
             this.loading = false;
             fileResource.uploadAvatar(this.uploadImage);
         }
     }
 
     @Watch('uploadImage', { deep: true })
-    async changeImagePreview() {
+    async changeImagePreview(): Promise<void> {
         if (this.uploadImage) {
             const reader = new FileReader();
             reader.readAsDataURL(this.uploadImage as Blob);
@@ -94,9 +107,9 @@ export default class AvatarUser extends Vue {
         }
     }
 
-    async mounted() {
-        if (this.isOwnerPage) this.userId = this.$store.state.userId
-        else this.userId = this.$route.params.id
+    async mounted(): Promise<void> {
+        if (this.isOwnerPage) this.userId = this.$store.state.userId;
+        else this.userId = this.$route.params.id;
 
         this.imageURL = await fileResource.getUserAvatar(
             this.userId,
@@ -105,12 +118,15 @@ export default class AvatarUser extends Vue {
         this.loading = false;
     }
 
-    sendMessage() {
-        this.$router.push(`/chat/${this.userId}`)
+    sendMessage(): void {
+        this.$router.push(`/chat/${this.userId}`);
     }
 
-    addToFriends() {
-        console.log('add to friends');
+    addToFriends(): void {
+        this.$socket.emit(
+            emitSocketsEvent.ADD_TO_FRIENDS,
+            this.$route.params.id
+        );
     }
 }
 </script>

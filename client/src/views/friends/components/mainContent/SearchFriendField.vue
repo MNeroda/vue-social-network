@@ -21,6 +21,4 @@ export default class SearchFriendField extends Vue {
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

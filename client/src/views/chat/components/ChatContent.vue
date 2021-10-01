@@ -1,7 +1,12 @@
 <template>
     <v-card>
-        <chat-info :userInfo='userInfo'/>
-        <chat-messages :loading='loading' :isCorrectUrl='isCorrectUrl' :messages='messages' class="messages-block" />
+        <chat-info :userInfo="userInfo" />
+        <chat-messages
+            :loading="loading"
+            :isCorrectUrl="isCorrectUrl"
+            :messages="messages"
+            class="messages-block"
+        />
 
         <v-form
             class="send-block d-flex align-center"
@@ -14,7 +19,7 @@
                     class="ml-4"
                     placeholder="Введите сообщение"
                     style="width: 500px"
-                    :aria-autocomplete='false'
+                    :aria-autocomplete="false"
                 ></v-text-field>
             </div>
             <v-btn depressed class="col-blue" @click="sendMessage">
@@ -26,52 +31,62 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import {ChatMessages} from '@/views/chat/components';
+import { ChatMessages } from '@/views/chat/components';
 import { emitSocketsEvent } from '@/types/socketEvents';
 import { UserResource } from '@/recources/UserResource';
 import ChatInfo from '@/views/chat/components/ChatInfo.vue';
+import {
+    ConversationWebsocket,
+    MessagesWebsocket,
+} from '@/types/resources/websocket';
 
-const userResource = new UserResource()
+const userResource = new UserResource();
 @Component({
     components: { ChatInfo, ChatMessages },
 })
 export default class ChatContent extends Vue {
-    @Prop() isNewDialog!: boolean
-    @Prop() dialogId!: string
-    @Prop() userInfo!: any
+    @Prop() isNewDialog!: boolean;
+    @Prop() dialogId!: string;
+    @Prop() userInfo!: ConversationWebsocket;
 
-    messages: any[] = []
+    messages: MessagesWebsocket[] = [];
     textMessage = '';
     loading = true;
-    isCorrectUrl = true
+    isCorrectUrl = true;
 
-    sendMessage() {
+    sendMessage(): void {
         if (!this.textMessage) {
-            return
+            return;
         }
         if (this.isNewDialog) {
-            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_NEW_DIALOG, {message: this.textMessage, toId: this.dialogId})
+            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_NEW_DIALOG, {
+                message: this.textMessage,
+                toId: this.dialogId,
+            });
         } else {
-            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_EXIST_DIALOG, {message: this.textMessage, toId: this.dialogId})
+            this.$socket.emit(emitSocketsEvent.SEND_MESSAGE_IN_EXIST_DIALOG, {
+                message: this.textMessage,
+                toId: this.dialogId,
+            });
         }
-        this.textMessage = ''
+        this.textMessage = '';
     }
 
-    pushMessage(newMessage: any) {
-        this.messages.push(newMessage)
+    pushMessage(newMessage: MessagesWebsocket): void {
+        this.messages.push(newMessage);
     }
 
-    async mounted() {
+    async mounted(): Promise<void> {
         try {
-            const res = await userResource.getMessagesByChatId(this.dialogId)
-            this.loading = false
-            this.messages = res.data.messages
+            const res = await userResource.getMessagesByChatId(this.dialogId);
+            this.loading = false;
+            this.messages = res.data.messages;
         } catch (e) {
-            this.loading = false
-            this.isCorrectUrl = false
-            this.messages = []
+            this.loading = false;
+            this.isCorrectUrl = false;
+            this.messages = [];
         }
-        this.$emit('funcPushMessage', this.pushMessage)
+        this.$emit('funcPushMessage', this.pushMessage);
     }
 }
 </script>

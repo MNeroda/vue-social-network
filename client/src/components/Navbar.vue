@@ -15,8 +15,13 @@
             </v-toolbar-title>
         </v-app-bar>
 
-        <v-navigation-drawer v-model="drawer" absolute temporary>
-            <sidebar-list-items />
+        <v-navigation-drawer
+            v-model="drawer"
+            absolute
+            temporary
+            style="height: 100vh"
+        >
+            <sidebar-list-items class="mt-3" />
         </v-navigation-drawer>
     </div>
 </template>
@@ -24,12 +29,18 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import SidebarListItems from '@/components/SidebarListItems.vue';
+import SnModal from '@/components/SnModal.vue';
 @Component({
-    components: { SidebarListItems },
+    components: { SnModal, SidebarListItems },
 })
 export default class Navbar extends Vue {
     drawer = false;
-    group = null;
+    get showNavBarIcon(): boolean {
+        return (
+            this.$route.path.includes('/chat') ||
+            this.$vuetify.breakpoint.mobile
+        );
+    }
 }
 </script>
 

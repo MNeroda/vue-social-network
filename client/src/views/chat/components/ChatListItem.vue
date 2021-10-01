@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex" style="gap: 10px; cursor: pointer" @click='moveToChat'>
+    <div class="d-flex" style="gap: 10px; cursor: pointer" @click="moveToChat">
         <div>
             <v-img
                 v-if="urlAvatar"
@@ -11,38 +11,45 @@
             />
             <div v-else style="width: 50px; height: 50px">
                 <v-icon class="image-to-circle" size="59"
-                >mdi-account-circle</v-icon
+                    >mdi-account-circle</v-icon
                 >
             </div>
         </div>
 
         <div>
-            <div class='ml-1' style='font-size: 17px'>{{conversation.name}}</div>
-            <div class='last-message col-dark-grey' style='font-size: 14px'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, quidem?</div>
+            <div class="ml-1" style="font-size: 17px">
+                {{ conversation.name }}
+            </div>
+            <div class="last-message col-dark-grey" style="font-size: 14px">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic,
+                quidem?
+            </div>
         </div>
-
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { FileResource } from '@/recources/FileResource';
+import { ConversationWebsocket } from '@/types/resources/websocket';
 
-const fileResource = new FileResource()
+const fileResource = new FileResource();
 @Component
 export default class ChatListItem extends Vue {
-    @Prop()conversation!: any
-    urlAvatar = ''
+    @Prop() conversation!: ConversationWebsocket;
+    urlAvatar = '';
 
-    moveToChat() {
+    moveToChat(): void {
         if (this.conversation.id !== this.$route.params.id) {
-            this.$router.push(`/chat/${this.conversation.id}`)
+            this.$router.push(`/chat/${this.conversation.id}`);
         }
     }
 
-    async mounted() {
+    async mounted(): Promise<void> {
         if (this.conversation.isHaveAvatar) {
-            this.urlAvatar = await fileResource.getUserAvatar(this.conversation.id);
+            this.urlAvatar = await fileResource.getUserAvatar(
+                this.conversation.id
+            );
         }
     }
 }
@@ -54,6 +61,6 @@ export default class ChatListItem extends Vue {
 }
 
 .last-message {
-    @include word-hide-mixin(2)
+    @include word-hide-mixin(2);
 }
 </style>

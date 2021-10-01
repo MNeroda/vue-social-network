@@ -1,8 +1,6 @@
-<template>
-    <div class="" style="position: relative">
-        <navbar />
+<!--
 
-        <v-row class="mt-0 view bg-light-grey">
+        <v-row class="mt-0 auth-layout-content bg-light-grey" style='overflow: hidden; position: relative'>
             <v-col cols="2" class="d-flex flex-column pt-0" style="gap: 15px">
                 <v-card
                     class="sidebar-auth-layout ml-3"
@@ -18,6 +16,29 @@
                 </div>
             </v-col>
         </v-row>
+
+-->
+
+<template>
+    <div style="position: relative">
+        <navbar />
+
+        <div class="view bg-light-grey">
+            <div class="d-flex pl-2 pb-1" style="gap: 15px; height: 100%">
+                <v-card
+                    class="sidebar-auth-layout ml-3 mt-3"
+                    style="height: fit-content; flex: 1"
+                >
+                    <sidebar-list-items></sidebar-list-items>
+                </v-card>
+
+                <router-view
+                    class="mt-3 router-view-tmp"
+                    :key="$route.path"
+                    style="flex: 7"
+                ></router-view>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -37,21 +58,16 @@ export default class AuthorizedLayout extends Vue {}
 <style lang="scss" scoped>
 .view {
     position: absolute;
-    overflow-y: hidden;
-    overflow-x: hidden;
     top: $header-height;
     bottom: -100vh;
     left: 0;
     right: 0;
+    background-color: $sn-main-light-grey !important;
 }
 
-.sidebar-auth-layout {
-    margin-top: 20px;
-}
-.main-content-auth-layout {
+.router-view-tmp {
     @include scrollbar($sn-main-grey);
     overflow-y: auto;
     overflow-x: hidden;
-    padding-top: 20px;
 }
 </style>

@@ -23,8 +23,6 @@ import { IUserInfo } from '@/types/resources/userResource';
 
 @Component
 export default class InfoUser extends Vue {
-    @Prop() info!: IUserInfo
-
-
+    @Prop() info!: IUserInfo;
 }
 </script>
