@@ -1,7 +1,7 @@
 <template>
     <div class="pa-4">
         <h1 v-if="!$route.params.id">CHOOSE DIALOG</h1>
-        <h1 v-else-if="!isCorrectUrl">INCORRECT URL</h1>
+        <h1 v-else-if="!isCorrectUrl && !isNewDialog">INCORRECT URL</h1>
         <h1 v-else-if="loading">LOADING</h1>
         <div
             v-else
@@ -25,18 +25,21 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { MessagesWebsocket } from '@/types/resources/websocket';
 
 @Component
 export default class ChatMessages extends Vue {
     @Prop() loading!: boolean;
     @Prop() isCorrectUrl!: boolean;
+    @Prop() isNewDialog!: boolean;
     @Prop() messages!: MessagesWebsocket[];
 
     isMyMessage(messageId: string): boolean {
         return messageId === this.$store.state.userId;
     }
+
+
 }
 </script>
 

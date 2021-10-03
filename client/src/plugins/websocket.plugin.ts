@@ -3,7 +3,6 @@ import _Vue from 'vue';
 import store from '../store';
 import { emitSocketsEvent, onSocketsEvent } from '@/types/socketEvents';
 import { MutationTypes } from '@/store/types';
-import { Vue } from 'vue-property-decorator';
 
 const wsPlugin = {
     install(Vue: typeof _Vue) {
@@ -11,9 +10,10 @@ const wsPlugin = {
         let isAuth = false;
 
         Vue.prototype.$socket = {
-            on(event: onSocketsEvent, callback: any) {
+            on(event: onSocketsEvent, callback: any): () => void {
                 if (isAuth && socket) {
                     socket.on(event, callback);
+                    return () => {socket?.off(event, callback)}
                 } else {
                     throw new Error(
                         'Попытка прослушивания события websocket без авторизации'
@@ -21,7 +21,7 @@ const wsPlugin = {
                 }
             },
 
-            emit(event: emitSocketsEvent, data: any) {
+            emit(event: emitSocketsEvent, data: any): void {
                 if (isAuth && socket) {
                     socket.emit(event, data);
                 } else {
@@ -81,7 +81,7 @@ _Vue.use(wsPlugin);
 declare module 'vue/types/vue' {
     interface Vue {
         $socket: {
-            on: (event: onSocketsEvent, callback: any) => void;
+            on: (event: onSocketsEvent, callback: any) => () => void;
             emit: (event: emitSocketsEvent, data: any) => void;
             off: (event: onSocketsEvent, callback: any) => void;
         };

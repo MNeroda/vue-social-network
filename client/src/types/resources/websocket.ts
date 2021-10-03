@@ -27,6 +27,7 @@ export interface ConversationWebsocket {
 
 export interface SerializeConversations {
     id: string;
+    groupName?: string;
     members: Array<{
         id: string;
         isHaveAvatar: boolean;

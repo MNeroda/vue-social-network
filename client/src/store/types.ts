@@ -6,7 +6,7 @@ export interface AppState {
     token: string;
     prevTokenTimeout: ReturnType<typeof setTimeout> | undefined;
     userId: string;
-    friendsList: { name: string; isHaveAvatar: boolean }[] | null;
+    friendsList: { name: string; isHaveAvatar: boolean, id: string }[] | null;
 }
 
 export enum MutationTypes {

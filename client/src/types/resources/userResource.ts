@@ -3,4 +3,5 @@ export interface IUserInfo {
     name: string;
     phone: string;
     isHaveAvatar: boolean;
+    id: string
 }

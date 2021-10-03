@@ -8,7 +8,7 @@ export class UserResource extends BaseResource {
         super('/api/user/');
     }
 
-    async getUserInfo(id: string): Promise<IUserInfo> {
+    async getUserInfo(id: string): Promise<IUserInfo & {userNotExist?: boolean}> {
         return this.axios
             .get('user-info', {
                 params: { id },

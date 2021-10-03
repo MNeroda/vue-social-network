@@ -4,11 +4,13 @@
         <chat-messages
             :loading="loading"
             :isCorrectUrl="isCorrectUrl"
+            :isNewDialog='isNewDialog'
             :messages="messages"
             class="messages-block"
         />
 
         <v-form
+            v-if='isVisibleForm'
             class="send-block d-flex align-center"
             style="gap: 15px"
             @submit.prevent
@@ -48,11 +50,15 @@ export default class ChatContent extends Vue {
     @Prop() isNewDialog!: boolean;
     @Prop() dialogId!: string;
     @Prop() userInfo!: ConversationWebsocket;
-
+    @Prop() isCorrectUrl!: boolean
     messages: MessagesWebsocket[] = [];
     textMessage = '';
     loading = true;
-    isCorrectUrl = true;
+
+    get isVisibleForm(): boolean {
+        return !!(this.$route.params.id) && this.isCorrectUrl && !this.loading
+    }
+
 
     sendMessage(): void {
         if (!this.textMessage) {
@@ -83,7 +89,6 @@ export default class ChatContent extends Vue {
             this.messages = res.data.messages;
         } catch (e) {
             this.loading = false;
-            this.isCorrectUrl = false;
             this.messages = [];
         }
         this.$emit('funcPushMessage', this.pushMessage);

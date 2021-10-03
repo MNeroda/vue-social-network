@@ -31,13 +31,18 @@ router.get('/friends-request', authMiddleware, async (req, res) => {
 });
 
 router.get('/user-info', async (req, res) => {
-    const user = await User.findById(req.query.id);
-    return res.status(200).json({
-        phone: user.phone,
-        email: user.email,
-        name: user.name,
-        isHaveAvatar: user.isHaveAvatar,
-    });
+    try {
+        const user = await User.findById(req.query.id);
+        return res.status(200).json({
+            phone: user.phone,
+            email: user.email,
+            name: user.name,
+            isHaveAvatar: user.isHaveAvatar,
+            id: user._id
+        });
+    } catch (e) {
+        return res.status(200).json({userNotExist: true})
+    }
 });
 
 router.get('/conversations', authMiddleware, async (req, res) => {
@@ -46,6 +51,7 @@ router.get('/conversations', authMiddleware, async (req, res) => {
     await user.populate('conversationList').execPopulate();
 
     const data = user.conversationList.map((dialog) => ({
+        groupName: dialog.groupName,
         members: dialog.members.filter(
             (item) => item.toString() !== req.userId
         ),

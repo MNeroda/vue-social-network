@@ -1,6 +1,6 @@
-export { default as AvatarUser } from './AvatarUser.vue';
-export { default as FriendsUser } from './FriendsUser.vue';
-export { default as GroupsUser } from './GroupsUser.vue';
-export { default as InfoUser } from './InfoUser.vue';
-export { default as PhotoUser } from './PhotoUser.vue';
-export { default as PostListUser } from './PostListUser.vue';
+export { default as AvatarUser } from './sidebar/AvatarUser.vue';
+export { default as FriendsUser } from './sidebar/FriendsUser.vue';
+export { default as GroupsUser } from './sidebar/GroupsUser.vue';
+export { default as InfoUser } from './main-content/InfoUser.vue';
+export { default as PhotoUser } from './main-content/PhotoUser.vue';
+export { default as PostListUser } from './main-content/PostListUser.vue';

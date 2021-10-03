@@ -1,7 +1,9 @@
 const { Schema, model, Types } = require('mongoose');
 
 const schema = new Schema({
-    isGroup: Boolean,
+    groupName: {
+        type: String,
+    },
     members: [
         {
             type: Types.ObjectId,

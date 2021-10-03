@@ -7,10 +7,10 @@
     >
         <v-card style="padding: 30px; min-height: 450px">
             <div class="d-flex justify-space-between">
-                <span style="font-size: 25px">Модальное окно</span>
+                <span style="font-size: 25px">{{ title }}</span>
                 <v-btn
                     depressed
-                    @click="$emit('dialogClose')"
+                    @click="$emit('dialogClose', false)"
                     text
                     retain-focus-on-click
                     small
@@ -20,16 +20,18 @@
                     закрыть
                 </v-btn>
             </div>
+            <slot></slot>
         </v-card>
     </v-dialog>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Model } from 'vue-property-decorator';
 
 @Component
 export default class SnModal extends Vue {
-    @Prop() dialog!: boolean;
+    @Model('dialogClose') dialog!: boolean;
+    @Prop({ default: '' }) title!: string;
 }
 </script>
 
