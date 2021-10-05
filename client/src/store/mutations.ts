@@ -6,7 +6,9 @@ export const mutations: Mutations = {
         state.token = token;
     },
     [MutationTypes.SET_PREV_TOKEN_TIMEOUT]: (state, timeouts) => {
-        clearTimeout(state.prevTokenTimeout);
+        if (state.prevTokenTimeout) {
+            clearTimeout(state.prevTokenTimeout);
+        }
         state.prevTokenTimeout = timeouts;
     },
     [MutationTypes.SET_USER_ID]: (state, userId) => {
