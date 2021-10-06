@@ -1,7 +1,7 @@
 <template>
-    <span class='test-selector'>
+    <div class='test-selector'>
         <h1>Hello</h1>
-    </span>
+    </div>
 </template>
 
 <script lang="ts">

@@ -13,6 +13,7 @@ import {
 import store from '@/store';
 import { ActionTypes } from '@/store/types';
 import { getDataFromJWT } from '@/modules/helpers/JWTHelper';
+import RelativePage from '@/views/testPage/RelativePage.vue';
 
 Vue.use(VueRouter);
 
@@ -25,6 +26,8 @@ export enum RouteNames {
     CHAT_PAGE = 'CHAT_PAGE',
     PROFILE_PAGE = 'PROFILE_PAGE',
     FRIENDS_PAGE = 'FRIENDS_PAGE',
+
+    TEST_PAGE = 'TEST_PAGE'
 }
 
 type RoutesType = RouteConfig & {
@@ -36,6 +39,14 @@ type RoutesType = RouteConfig & {
 };
 
 const routes: Array<RoutesType> = [
+    {
+        path: '/test',
+        name: RouteNames.TEST_PAGE,
+        component: RelativePage,
+        meta: {
+            layout: 'unauthorized-layout'
+        }
+    },
     {
         path: '/page404',
         name: RouteNames.PAGE_404,
