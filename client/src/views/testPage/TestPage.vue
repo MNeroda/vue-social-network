@@ -1,5 +1,5 @@
 <template>
-    <span class='test-selector'>
+    <span class="test-selector">
         <h1>Hello</h1>
     </span>
 </template>
@@ -11,6 +11,4 @@ import { Vue, Component } from 'vue-property-decorator';
 export default class TestPage extends Vue {}
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

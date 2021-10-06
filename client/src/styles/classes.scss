@@ -10,3 +10,9 @@
     transform: translate(-50%, -50%);
     color: #aaa;
 }
+
+.clip-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -8,8 +8,7 @@ export type Actions<Bindings, State, RootState> = {
         ...args: Parameters<Bindings[key]>
     ) => //@ts-ignore
     ReturnType<Bindings[key]>;
-} &
-    ActionTree<State, RootState>;
+} & ActionTree<State, RootState>;
 
 export type Getters<Bindings, State, RootState> = {
     [key in keyof Bindings]: (
@@ -17,5 +16,4 @@ export type Getters<Bindings, State, RootState> = {
         getters: Bindings,
         rootState: RootState
     ) => Bindings[key];
-} &
-    GetterTree<State, RootState>;
+} & GetterTree<State, RootState>;

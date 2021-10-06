@@ -1,16 +1,16 @@
 <template>
     <v-card>
-        <chat-info :userInfo="userInfo" />
+        <chat-info :userInfo="userInfo" :isGroup="isGroup" />
         <chat-messages
             :loading="loading"
             :isCorrectUrl="isCorrectUrl"
-            :isNewDialog='isNewDialog'
+            :isNewDialog="isNewDialog"
             :messages="messages"
             class="messages-block"
         />
 
         <v-form
-            v-if='isVisibleForm'
+            v-if="isVisibleForm"
             class="send-block d-flex align-center"
             style="gap: 15px"
             @submit.prevent
@@ -48,17 +48,17 @@ const userResource = new UserResource();
 })
 export default class ChatContent extends Vue {
     @Prop() isNewDialog!: boolean;
+    @Prop() isGroup!: boolean;
     @Prop() dialogId!: string;
     @Prop() userInfo!: ConversationWebsocket;
-    @Prop() isCorrectUrl!: boolean
+    @Prop() isCorrectUrl!: boolean;
     messages: MessagesWebsocket[] = [];
     textMessage = '';
     loading = true;
 
     get isVisibleForm(): boolean {
-        return !!(this.$route.params.id) && this.isCorrectUrl && !this.loading
+        return !!this.$route.params.id && this.isCorrectUrl && !this.loading;
     }
-
 
     sendMessage(): void {
         if (!this.textMessage) {

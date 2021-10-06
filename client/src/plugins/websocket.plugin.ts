@@ -13,7 +13,9 @@ const wsPlugin = {
             on(event: onSocketsEvent, callback: any): () => void {
                 if (isAuth && socket) {
                     socket.on(event, callback);
-                    return () => {socket?.off(event, callback)}
+                    return () => {
+                        socket?.off(event, callback);
+                    };
                 } else {
                     throw new Error(
                         'Попытка прослушивания события websocket без авторизации'

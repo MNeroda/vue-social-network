@@ -22,7 +22,7 @@ export class FileResource extends BaseResource {
         super('/api/file');
     }
 
-    async getUserAvatar(id: string, isHaveAvatar = true) {
+    async getUserAvatar(id: string, isHaveAvatar = true): Promise<string> {
         if (id) {
             if (isHaveAvatar) {
                 const ref = storage.ref(`${id}/avatar.jpg`);
@@ -34,9 +34,10 @@ export class FileResource extends BaseResource {
                 return url;
             }
         }
+        return '';
     }
 
-    async uploadAvatar(file: any): Promise<void> {
+    async uploadAvatar(file: File): Promise<void> {
         if (!store.state.userId) {
             throw new Error(
                 'Попытка установить аватар у несуществуещего пользователя'

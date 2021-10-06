@@ -3,5 +3,11 @@ export interface IUserInfo {
     name: string;
     phone: string;
     isHaveAvatar: boolean;
-    id: string
+    id: string;
+}
+
+export interface IFriendInfo {
+    name: string;
+    isHaveAvatar: boolean;
+    id: string;
 }

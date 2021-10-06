@@ -5,36 +5,48 @@
         @dialogClose="closeDialogHandler"
         title="Создать группу"
     >
-        <v-form v-model='isValidForm'>
+        <v-form v-model="isValidForm">
             <v-text-field
-                ref='groupNameRef'
-                v-model='groupName'
+                ref="groupNameRef"
+                v-model="groupName"
                 class="mt-10"
                 placeholder="Введите название группы"
                 outlined
-                :rules='groupNameRules'
+                :rules="groupNameRules"
                 validate-on-blur
             ></v-text-field>
         </v-form>
 
         <v-autocomplete
-            class='mt-3'
+            class="mt-3"
             v-model="friends"
             outlined
             :items="$store.state.friendsList"
             item-text="name"
-            item-value='id'
+            item-value="id"
             multiple
-            label='Добавьте друзей'
+            label="Добавьте друзей"
         >
-            <template v-slot:item='data'>
-                <friend-card-create-group :friend='data.item'></friend-card-create-group>
+            <template v-slot:item="data">
+                <friend-card-create-group
+                    :friend="data.item"
+                ></friend-card-create-group>
             </template>
         </v-autocomplete>
 
-        <div class='d-flex justify-end mt-4'>
-            <v-btn class='bg-light-grey col-dark-grey mr-4' style='text-transform: none' @click='closeDialogHandler'>Отменить</v-btn>
-            <v-btn class='bg-blue white--text mr-2' style='text-transform: none' @click='createGroup'>Создать группу</v-btn>
+        <div class="d-flex justify-end mt-4">
+            <v-btn
+                class="bg-light-grey col-dark-grey mr-4"
+                style="text-transform: none"
+                @click="closeDialogHandler"
+                >Отменить</v-btn
+            >
+            <v-btn
+                class="bg-blue white--text mr-2"
+                style="text-transform: none"
+                @click="createGroup"
+                >Создать группу</v-btn
+            >
         </div>
     </sn-modal>
 </template>
@@ -45,7 +57,11 @@ import SnModal from '@/components/SnModal.vue';
 import { validators } from '@/modules/validators';
 import { VForm } from '@/types/VForm';
 import FriendCardCreateGroup from '@/components/modals/createGroup/FriendCardCreateGroup.vue';
-import { emitSocketsEvent, onSocketsEvent, removeSocketListenersType } from '@/types/socketEvents';
+import {
+    emitSocketsEvent,
+    onSocketsEvent,
+    removeSocketListenersType,
+} from '@/types/socketEvents';
 import { unsubscribeSocket } from '@/modules/helpers/unsubscribeSocket';
 
 @Component({
@@ -53,12 +69,12 @@ import { unsubscribeSocket } from '@/modules/helpers/unsubscribeSocket';
 })
 export default class CreateDialogModal extends Vue {
     @Model('dialogClose') dialog!: boolean;
-    groupName = ''
-    groupNameRules = [validators.required('Введите название группы')]
+    groupName = '';
+    groupNameRules = [validators.required('Введите название группы')];
     friends: string[] = [];
-    isValidForm = false
+    isValidForm = false;
     get groupNameRef(): VForm {
-        return this.$refs.groupNameRef as VForm
+        return this.$refs.groupNameRef as VForm;
     }
 
     closeDialogHandler(): void {
@@ -67,23 +83,27 @@ export default class CreateDialogModal extends Vue {
 
     async createGroup(): Promise<void> {
         if (!this.isValidForm) {
-            this.groupNameRef.validate()
-            return
+            this.groupNameRef.validate();
+            return;
         }
-        this.$socket.emit(emitSocketsEvent.CREATE_GROUP, {groupName: this.groupName, friendsIds: this.friends})
+        this.$socket.emit(emitSocketsEvent.CREATE_GROUP, {
+            groupName: this.groupName,
+            friendsIds: this.friends,
+        });
     }
 
-    removeSocketListeners: removeSocketListenersType = {
-
-    }
+    removeSocketListeners: removeSocketListenersType = {};
     async mounted(): Promise<void> {
-        this.removeSocketListeners.GROUP_CREATED = this.$socket.on(onSocketsEvent.GROUP_CREATED, (groupId: string) => {
-            this.closeDialogHandler()
-            this.$router.push(`/chat/${groupId}`)
-        })
+        this.removeSocketListeners.GROUP_CREATED = this.$socket.on(
+            onSocketsEvent.GROUP_CREATED,
+            (groupId: string) => {
+                this.closeDialogHandler();
+                this.$router.push(`/chat/${groupId}`);
+            }
+        );
     }
     destroyed() {
-        unsubscribeSocket(this.removeSocketListeners)
+        unsubscribeSocket(this.removeSocketListeners);
     }
 }
 </script>

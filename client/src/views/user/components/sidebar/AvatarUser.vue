@@ -78,7 +78,7 @@ export default class AvatarUser extends Vue {
     uploadImage: File | null = null;
     imagePreview: string | ArrayBuffer | null = null;
 
-    imageURL: FileResource | null = null;
+    imageURL = '';
     downloadedImagePreview: string | ArrayBuffer | null = null;
     clickOnInputImage(): void {
         const ref: VueElementClickable = this.$refs.file as VueElementClickable;

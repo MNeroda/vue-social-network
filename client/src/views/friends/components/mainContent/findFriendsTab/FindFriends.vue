@@ -18,7 +18,11 @@ import {
     SearchFriendField,
     FriendCard,
 } from '@/views/friends/components/mainContent';
-import { emitSocketsEvent, onSocketsEvent, removeSocketListenersType } from '@/types/socketEvents';
+import {
+    emitSocketsEvent,
+    onSocketsEvent,
+    removeSocketListenersType,
+} from '@/types/socketEvents';
 import { FindUserWebsocket } from '@/types/resources/websocket';
 import { emptyFunction } from '@/modules/helpers/emptyFunction';
 import { unsubscribeSocket } from '@/modules/helpers/unsubscribeSocket';
@@ -35,8 +39,8 @@ export default class FindFriends extends Vue {
     }
 
     removeSocketListeners: removeSocketListenersType = {
-        [onSocketsEvent.SET_FRIENDS_BY_NAME]: emptyFunction
-    }
+        [onSocketsEvent.SET_FRIENDS_BY_NAME]: emptyFunction,
+    };
 
     mounted(): void {
         this.removeSocketListeners.SET_FRIENDS_BY_NAME = this.$socket.on(
@@ -47,8 +51,8 @@ export default class FindFriends extends Vue {
         );
     }
 
-    destroyed() {
-        unsubscribeSocket(this.removeSocketListeners)
+    destroyed(): void {
+        unsubscribeSocket(this.removeSocketListeners);
     }
 }
 </script>

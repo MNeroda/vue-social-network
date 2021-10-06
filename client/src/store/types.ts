@@ -1,12 +1,13 @@
 import { MutationTree } from 'vuex';
 import { IFormLogin, IFormRegister } from '@/types/user';
 import { FriendsWebsocket } from '@/types/resources/websocket';
+import { IFriendInfo } from '@/types/resources/userResource';
 
 export interface AppState {
     token: string;
     prevTokenTimeout: ReturnType<typeof setTimeout> | undefined;
     userId: string;
-    friendsList: { name: string; isHaveAvatar: boolean, id: string }[] | null;
+    friendsList: IFriendInfo[] | null;
 }
 
 export enum MutationTypes {

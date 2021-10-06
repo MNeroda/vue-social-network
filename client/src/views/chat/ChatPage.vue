@@ -12,6 +12,7 @@
                 :isNewDialog="isNewDialog"
                 :dialogId="dialogId"
                 :isCorrectUrl="isCorrectUrl"
+                :isGroup="isGroup"
                 style="flex: 7"
                 @funcPushMessage="updatePushMessageHandler"
             ></chat-content>
@@ -31,6 +32,7 @@ import {
 import ChatSkeletonLoader from '@/views/chat/ChatSkeletonLoader.vue';
 import {
     ConversationWebsocket,
+    MessagesWebsocket,
     SerializeConversations,
 } from '@/types/resources/websocket';
 import { emptyFunction } from '@/modules/helpers/emptyFunction';
@@ -48,13 +50,14 @@ export default class ChatPage extends Vue {
     conversationArr: SerializeConversations[] = [];
     loading = true;
     userInfoInNewConversation: ConversationWebsocket | null = null;
+    isGroup = false;
 
-    pushMessage: ((message: any) => void) | null = null;
-    updatePushMessageHandler(func: (message: any) => void) {
+    pushMessage: ((message: MessagesWebsocket) => void) | null = null;
+    updatePushMessageHandler(func: (message: MessagesWebsocket) => void): void {
         this.pushMessage = func;
     }
 
-    get userInfoFromListConversation() {
+    get userInfoFromListConversation(): ConversationWebsocket | null {
         if (this.userInfoInNewConversation) {
             return this.userInfoInNewConversation;
         } else if (this.listConversations.length) {
@@ -65,20 +68,21 @@ export default class ChatPage extends Vue {
         return null;
     }
 
-    get listConversations(): ConversationWebsocket[] {
+    get listConversations(): Array<
+        ConversationWebsocket & { isGroup: boolean }
+    > {
         return this.conversationArr.map((conversation) => {
             if (!conversation.groupName) {
                 return {
+                    isGroup: false,
                     name: conversation.members[0].name,
                     linkTo: conversation.members[0].id,
                     isHaveAvatar: conversation.members[0].isHaveAvatar,
                     id: conversation.members[0].id,
                 };
             } else {
-                //todo сделать логику для групп
-                //Вероятнее всего поменяется только linkTo: conversation.members[0].id
-                //на linkTo: conversation.id
                 return {
+                    isGroup: true,
                     name: conversation.groupName,
                     linkTo: conversation.id,
                     isHaveAvatar: false,
@@ -88,18 +92,23 @@ export default class ChatPage extends Vue {
         });
     }
 
-    @Watch('$route.params.id')
+    @Watch('$route.params.id', { immediate: true })
     async changeConversationId(): Promise<void> {
+        this.conversationArr = await userResource.getConversation();
+        this.loading = false;
         let indexConversation = -1;
-        this.conversationArr.map((conversation: any, index: number) => {
-            if (conversation.id === this.$route.params.id) {
-                indexConversation = index;
-            }
-            if (
+        this.conversationArr.map((conversation, index: number) => {
+            if (conversation.groupName) {
+                if (conversation.id === this.$route.params.id) {
+                    this.isGroup = true;
+                    indexConversation = index;
+                }
+            } else if (
                 conversation.members
-                    .map((member: any) => member.id)
+                    .map((member) => member.id)
                     .includes(this.$route.params.id)
             ) {
+                this.isGroup = false;
                 indexConversation = index;
             }
         });
@@ -107,11 +116,11 @@ export default class ChatPage extends Vue {
         if (indexConversation > -1) {
             this.isNewDialog = false;
             this.dialogId = this.conversationArr[indexConversation].id;
-            this.isCorrectUrl = true
+            this.isCorrectUrl = true;
         } else {
             const res = await userResource.getUserInfo(this.$route.params.id);
             //неверный url
-            if (res.userNotExist) {
+            if (!res) {
                 this.isNewDialog = false;
                 this.isCorrectUrl = false;
             } else {
@@ -134,60 +143,23 @@ export default class ChatPage extends Vue {
     };
 
     async mounted(): Promise<void> {
-        this.conversationArr = await userResource.getConversation();
-        console.log('mCoArr ', this.conversationArr);
-        this.loading = false;
-        let indexConversation = -1;
-
-        this.conversationArr.map((conversation: any, index: number) => {
-            if (conversation.id === this.$route.params.id) {
-                indexConversation = index;
-            }
-            if (
-                conversation.members
-                    .map((member: any) => member.id)
-                    .includes(this.$route.params.id)
-            ) {
-                indexConversation = index;
-            }
-        });
-
-        if (indexConversation > -1) {
-            this.isNewDialog = false;
-            this.dialogId = this.conversationArr[indexConversation].id;
-        } else {
-            const res = await userResource.getUserInfo(this.$route.params.id);
-            //неверный url
-            if (res.userNotExist) {
-                this.isNewDialog = false;
-                this.isCorrectUrl = false;
-            } else {
-                this.userInfoInNewConversation = {
-                    id: res.id,
-                    isHaveAvatar: res.isHaveAvatar,
-                    linkTo: res.id,
-                    name: res.name,
-                };
-                this.isNewDialog = true;
-                this.dialogId = this.$route.params.id;
-            }
-        }
-
         this.removeSocketListeners.NEW_DIALOG = this.$socket.on(
             onSocketsEvent.NEW_DIALOG,
-            (data: any) => {
-                console.log('dialog ', data);
+            (data: SerializeConversations) => {
                 this.isNewDialog = false;
-                this.dialogId = data._id;
-                this.conversationArr.unshift(data)
-
+                this.dialogId = data.id;
+                this.conversationArr.unshift(data);
             }
         );
 
         this.removeSocketListeners.NEW_MESSAGE = this.$socket.on(
             onSocketsEvent.NEW_MESSAGE,
-            (data: any) => {
-                if (this.$route.params.id === data.toId) {
+            (data: MessagesWebsocket) => {
+                console.log('nmsg ', data);
+                if (
+                    this.$route.params.id === data.toId ||
+                    this.$store.state.userId === data.senderId
+                ) {
                     if (this.pushMessage) {
                         this.pushMessage(data);
                     } else {
@@ -200,13 +172,16 @@ export default class ChatPage extends Vue {
                 );
                 this.conversationArr = [
                     this.conversationArr[idx],
-                    ...[...this.conversationArr.slice(0, idx), ...this.conversationArr.slice(idx + 1)],
+                    ...[
+                        ...this.conversationArr.slice(0, idx),
+                        ...this.conversationArr.slice(idx + 1),
+                    ],
                 ];
             }
         );
     }
 
-    destroyed() {
+    destroyed(): void {
         unsubscribeSocket(this.removeSocketListeners);
     }
 }

@@ -45,6 +45,22 @@ const schema = new Schema({
         type: Boolean,
         default: false,
     },
+    photos: [
+        {
+            id: {
+                type: String,
+            },
+            liked: [
+                {
+                    type: Types.ObjectId,
+                },
+            ],
+            date: {
+                type: Date,
+                default: Date.now(),
+            },
+        },
+    ],
 });
 
 module.exports = model('User', schema);

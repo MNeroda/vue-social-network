@@ -1,3 +1,3 @@
 export function emptyFunction() {
-    throw new Error('Эта функция не должна вызываться')
+    throw new Error('Эта функция не должна вызываться');
 }

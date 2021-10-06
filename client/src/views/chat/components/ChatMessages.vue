@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 import { MessagesWebsocket } from '@/types/resources/websocket';
 
 @Component
@@ -38,8 +38,6 @@ export default class ChatMessages extends Vue {
     isMyMessage(messageId: string): boolean {
         return messageId === this.$store.state.userId;
     }
-
-
 }
 </script>
 

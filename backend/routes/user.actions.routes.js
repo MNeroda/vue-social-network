@@ -38,10 +38,10 @@ router.get('/user-info', async (req, res) => {
             email: user.email,
             name: user.name,
             isHaveAvatar: user.isHaveAvatar,
-            id: user._id
+            id: user._id,
         });
     } catch (e) {
-        return res.status(200).json({userNotExist: true})
+        return res.status(200).json();
     }
 });
 
@@ -58,8 +58,14 @@ router.get('/conversations', authMiddleware, async (req, res) => {
         id: dialog._id,
     }));
 
+    const arrIds = data
+        .map((item) => item.members)
+        .reduce((acc, item) => {
+            item.map((id) => acc.push(id));
+            return acc;
+        }, []);
     const users = await User.find({
-        _id: { $in: data.map((item) => item.members) },
+        _id: { $in: arrIds },
     });
     const conversationsData = data.map((dialog) => ({
         ...dialog,
@@ -87,8 +93,13 @@ router.get('/messages-by-id', authMiddleware, async (req, res) => {
         (conversation) => conversation._id.toString() === req.query.id
     );
     if (currentConversation.length) {
-        const messages = currentConversation.map(
-            (conversation) => conversation.messages
+        const messages = currentConversation.map((conversation) =>
+            conversation.messages.map((mes) => ({
+                date: mes.date,
+                senderId: mes.senderId,
+                value: mes.value,
+                toId: mes._id,
+            }))
         )[0];
         return res.status(200).json({ messages });
     }

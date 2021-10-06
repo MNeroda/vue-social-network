@@ -15,7 +15,7 @@ export interface MessagesWebsocket {
     date: string;
     senderId: string;
     value: string;
-    _id: string;
+    toId: string;
 }
 
 export interface ConversationWebsocket {

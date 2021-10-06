@@ -7,7 +7,7 @@
                     :isHaveAvatar="info.isHaveAvatar"
                     :isOwnerPage="isOwnerPage"
                 />
-                <friends-user />
+                <friends-user :isOwnerPage="isOwnerPage" />
                 <groups-user />
             </v-col>
             <v-col cols="9" class="d-flex flex-column pt-0" style="gap: 15px">
@@ -64,6 +64,9 @@ export default class HomePage extends Vue {
         else userId = this.$route.params.id;
 
         this.info = await userResource.getUserInfo(userId);
+        if (!this.info) {
+            this.$router.push('/page404');
+        }
         this.loading = false;
     }
 }

@@ -1,14 +1,18 @@
 import { BaseResource } from '@/recources/BaseResource';
-import store from '@/store';
-import { IUserInfo } from '@/types/resources/userResource';
-import { FriendsWebsocket } from '@/types/resources/websocket';
+import { IFriendInfo, IUserInfo } from '@/types/resources/userResource';
+import {
+    FriendsWebsocket,
+    MessagesWebsocket,
+    SerializeConversations,
+} from '@/types/resources/websocket';
+import { AxiosResponse } from 'axios';
 
 export class UserResource extends BaseResource {
     constructor() {
         super('/api/user/');
     }
 
-    async getUserInfo(id: string): Promise<IUserInfo & {userNotExist?: boolean}> {
+    async getUserInfo(id: string): Promise<IUserInfo> {
         return this.axios
             .get('user-info', {
                 params: { id },
@@ -16,19 +20,26 @@ export class UserResource extends BaseResource {
             .then((res) => res.data);
     }
 
-    async getConversation(): Promise<any> {
+    async getConversation(): Promise<SerializeConversations[]> {
         return this.axios
             .get('conversations')
             .then((res) => res.data.conversationArr);
     }
 
-    async getMessagesByChatId(id: string): Promise<any> {
-        return this.axios.get('messages-by-id', {
-            params: { id },
-        });
+    async getMessagesByChatId(
+        id: string
+    ): Promise<AxiosResponse<{ messages: MessagesWebsocket[] }>> {
+        return this.axios
+            .get('messages-by-id', {
+                params: { id },
+            })
+            .then((res) => {
+                console.log('lolo ', res.data);
+                return res;
+            });
     }
 
-    async getFriendsListById(id: string): Promise<any> {
+    async getFriendsListById(id: string): Promise<IFriendInfo[]> {
         return this.axios
             .get('friends-list', {
                 params: { id },
@@ -36,7 +47,7 @@ export class UserResource extends BaseResource {
             .then((res) => res.data);
     }
 
-    async getFriendsRequest(): Promise<any> {
+    async getFriendsRequest(): Promise<FriendsWebsocket[]> {
         return this.axios.get('friends-request').then((res) => res.data);
     }
 }

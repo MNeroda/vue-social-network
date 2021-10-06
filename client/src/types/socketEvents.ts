@@ -4,7 +4,7 @@ export enum onSocketsEvent {
     NEW_MESSAGE = 'NEW_MESSAGE',
     NEW_FRIEND_PUSH_TO_STORE = 'NEW_FRIEND_PUSH_TO_STORE',
     MESSAGE = 'MESSAGE',
-    GROUP_CREATED = 'GROUP_CREATED'
+    GROUP_CREATED = 'GROUP_CREATED',
 }
 
 export enum emitSocketsEvent {
@@ -12,9 +12,9 @@ export enum emitSocketsEvent {
     SEND_MESSAGE_IN_NEW_DIALOG = 'SEND_MESSAGE_IN_NEW_DIALOG',
     SEND_MESSAGE_IN_EXIST_DIALOG = 'SEND_MESSAGE_IN_EXIST_DIALOG',
     ADD_TO_FRIENDS = 'ADD_TO_FRIENDS',
-    CREATE_GROUP = 'CREATE_GROUP'
+    CREATE_GROUP = 'CREATE_GROUP',
 }
 
 export type removeSocketListenersType = {
-    [key in onSocketsEvent]?: () => void
-}
+    [key in onSocketsEvent]?: () => void;
+};

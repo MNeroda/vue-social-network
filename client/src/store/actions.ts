@@ -30,10 +30,7 @@ function setAccessToken(accessToken: string) {
 }
 
 export const actions: Actions<ActionBindings, AppState, AppState> = {
-    [ActionTypes.LOGIN]: async (
-        { commit, dispatch, state },
-        form: IFormLogin
-    ) => {
+    [ActionTypes.LOGIN]: async ({ commit }, form: IFormLogin) => {
         try {
             const fpPromise = await FingerprintJS.load();
             const fingerPrint = await fpPromise.get();
@@ -63,10 +60,7 @@ export const actions: Actions<ActionBindings, AppState, AppState> = {
         }
     },
 
-    [ActionTypes.REGISTER]: async (
-        { commit, dispatch, state },
-        form: IFormRegister
-    ) => {
+    [ActionTypes.REGISTER]: async ({ commit }, form: IFormRegister) => {
         try {
             const fpPromise = await FingerprintJS.load();
             const fingerPrint = await fpPromise.get();

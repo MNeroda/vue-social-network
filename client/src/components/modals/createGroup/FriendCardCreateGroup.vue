@@ -10,22 +10,22 @@
                 class="image-to-circle"
             />
             <v-icon v-else class="image-to-circle" size="44"
-            >mdi-account-circle</v-icon
+                >mdi-account-circle</v-icon
             >
         </v-list-item-avatar>
-        {{friend.name}}
+        {{ friend.name }}
     </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { FileResource } from '@/recources/FileResource';
 
-const fileResource = new FileResource()
+const fileResource = new FileResource();
 @Component
 export default class FriendCardCreateGroup extends Vue {
-    @Prop() friend!: { name: string; isHaveAvatar: boolean, id: string }
-    urlAvatar = ''
+    @Prop() friend!: { name: string; isHaveAvatar: boolean; id: string };
+    urlAvatar = '';
     async mounted(): Promise<void> {
         if (this.friend.isHaveAvatar) {
             this.urlAvatar = await fileResource.getUserAvatar(this.friend.id);
@@ -34,4 +34,4 @@ export default class FriendCardCreateGroup extends Vue {
 }
 </script>
 
-<style lang='css' scoped></style>
+<style lang="css" scoped></style>

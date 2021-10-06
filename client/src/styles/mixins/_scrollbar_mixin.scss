@@ -3,7 +3,7 @@
     transition: color 0.3s;
 
     &:hover {
-        color: $color;
+        color: $color!important;
     }
 
     &::-webkit-scrollbar {

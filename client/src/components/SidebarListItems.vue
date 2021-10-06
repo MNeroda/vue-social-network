@@ -13,7 +13,7 @@
                     <v-list-item-title>{{ item.text }}</v-list-item-title>
                 </v-list-item>
 
-                <template v-if='showAdditionalItems'>
+                <template v-if="showAdditionalItems">
                     <v-list-item
                         v-for="additionalItem of additionalItems"
                         :key="additionalItem.text"
@@ -21,13 +21,17 @@
                         @click="additionalItem.func"
                     >
                         <v-icon>{{ additionalItem.icon }}</v-icon>
-                        <v-list-item-title>{{ additionalItem.text }}</v-list-item-title>
+                        <v-list-item-title>{{
+                            additionalItem.text
+                        }}</v-list-item-title>
                     </v-list-item>
                 </template>
-
             </v-list-item-group>
         </v-list>
-        <create-dialog-modal v-if='showAdditionalItems' v-model='isShowGroupModal' />
+        <create-dialog-modal
+            v-if="showAdditionalItems"
+            v-model="isShowGroupModal"
+        />
     </div>
 </template>
 
@@ -43,7 +47,7 @@ export interface ISidebarItems {
 }
 
 @Component({
-    components: { CreateDialogModal, SnModal }
+    components: { CreateDialogModal, SnModal },
 })
 export default class SidebarListItems extends Vue {
     items: ISidebarItems[] = [
@@ -54,18 +58,22 @@ export default class SidebarListItems extends Vue {
         { text: 'Сообщества', icon: 'mdi-account', link: '/groups' },
     ];
 
-    get showAdditionalItems(): boolean{
-        return this.$route.path.includes('/chat')
+    get showAdditionalItems(): boolean {
+        return this.$route.path.includes('/chat');
     }
 
-    isShowGroupModal = false
+    isShowGroupModal = false;
 
     createGroupModal() {
-        this.isShowGroupModal = true
+        this.isShowGroupModal = true;
     }
 
     additionalItems = [
-        { text: 'Создать группу', icon: 'mdi-clock', func: this.createGroupModal},
+        {
+            text: 'Создать группу',
+            icon: 'mdi-clock',
+            func: this.createGroupModal,
+        },
     ];
 }
 </script>

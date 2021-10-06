@@ -94,11 +94,13 @@ const createWebsocket = (server) => {
 
             io.to(conversationId).emit('NEW_DIALOG', {
                 id: conversation._id,
-                members: [{
-                    id: toId,
-                    isHaveAvatar: toUser.isHaveAvatar,
-                    name: toUser.name
-                }]
+                members: [
+                    {
+                        id: toId,
+                        isHaveAvatar: toUser.isHaveAvatar,
+                        name: toUser.name,
+                    },
+                ],
             });
         });
 
@@ -195,30 +197,29 @@ const createWebsocket = (server) => {
             }
         });
 
-        socket.on('CREATE_GROUP', async ({groupName, friendsIds}) => {
+        socket.on('CREATE_GROUP', async ({ groupName, friendsIds }) => {
             const conversation = new Conversation({
                 groupName,
-                members: [userId, ...friendsIds]
-            })
-            await conversation.save()
-            const user = await User.findById(userId)
-            user.conversationList.push(conversation._id)
-            await user.save()
+                members: [userId, ...friendsIds],
+            });
+            await conversation.save();
+            const user = await User.findById(userId);
+            user.conversationList.push(conversation._id);
+            await user.save();
 
             friendsIds.map(async (friendId) => {
-                const friend = await User.findById(friendId)
-                friend.conversationList.push(conversation._id)
-+                friend.save()
-            })
+                const friend = await User.findById(friendId);
+                friend.conversationList.push(conversation._id) + friend.save();
+            });
 
-            io.emit('GROUP_CREATED', conversation._id)
+            io.emit('GROUP_CREATED', conversation._id);
             io.emit('MESSAGE', {
                 message: `Вы создали группу ${groupName}`,
                 messageType: 'info',
             });
 
             //todo эмитить еще и друзей
-        })
+        });
 
         socket.on('disconnect', async () => {
             await User.findOneAndUpdate(

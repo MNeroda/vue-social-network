@@ -14,7 +14,10 @@
                 class="image-to-circle"
             />
             <div v-else style="width: 40px; height: 40px">
-                <v-icon class="image-to-circle" size="50"
+                <v-icon v-if="isGroup" class="image-to-circle" size="50"
+                    >mdi-account-supervisor-circle</v-icon
+                >
+                <v-icon v-else class="image-to-circle" size="50"
                     >mdi-account-circle</v-icon
                 >
             </div>
@@ -33,6 +36,7 @@ import { ConversationWebsocket } from '@/types/resources/websocket';
 const fileResource = new FileResource();
 @Component
 export default class ChatInfo extends Vue {
+    @Prop() isGroup!: boolean;
     @Prop() userInfo!: ConversationWebsocket;
 
     urlAvatar = '';
