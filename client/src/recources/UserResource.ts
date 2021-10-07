@@ -29,14 +29,9 @@ export class UserResource extends BaseResource {
     async getMessagesByChatId(
         id: string
     ): Promise<AxiosResponse<{ messages: MessagesWebsocket[] }>> {
-        return this.axios
-            .get('messages-by-id', {
-                params: { id },
-            })
-            .then((res) => {
-                console.log('lolo ', res.data);
-                return res;
-            });
+        return this.axios.get('messages-by-id', {
+            params: { id },
+        });
     }
 
     async getFriendsListById(id: string): Promise<IFriendInfo[]> {

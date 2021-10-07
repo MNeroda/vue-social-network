@@ -69,7 +69,7 @@ export default class ChatPage extends Vue {
     }
 
     get listConversations(): Array<
-        ConversationWebsocket & { isGroup: boolean }
+        ConversationWebsocket & { isGroup: boolean, }
     > {
         return this.conversationArr.map((conversation) => {
             if (!conversation.groupName) {
@@ -87,6 +87,7 @@ export default class ChatPage extends Vue {
                     linkTo: conversation.id,
                     isHaveAvatar: false,
                     id: conversation.id,
+                    members: conversation.members
                 };
             }
         });

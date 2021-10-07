@@ -1,7 +1,7 @@
 <template>
     <div class="view" style="position: relative">
         <navbar />
-        <router-view />
+        <router-view :key='$route.query.update'/>
     </div>
 </template>
 

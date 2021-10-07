@@ -12,7 +12,7 @@
             </v-col>
             <v-col cols="9" class="d-flex flex-column pt-0" style="gap: 15px">
                 <info-user :info="info" />
-                <photo-user />
+                <photo-user :userId='info.id' :userName='info.name' :isOwnerPage='isOwnerPage'/>
                 <post-list-user />
             </v-col>
         </v-row>

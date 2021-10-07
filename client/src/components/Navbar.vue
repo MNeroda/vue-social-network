@@ -50,7 +50,7 @@ export default class Navbar extends Vue {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 150;
 }
 
 .navbar-bg {

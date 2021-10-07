@@ -22,9 +22,15 @@
                 >
             </div>
         </div>
-        <div class="ml-1 pt-1" style="font-size: 20px" @click="moveToUserPage">
+        <div class="ml-1 pt-1" style="font-size: 20px" @click="chatAction">
             {{ userInfo.name }}
         </div>
+
+        <edit-group-modal
+            v-if="isShowGroupModal"
+            v-model="isShowGroupModal"
+            :userInfo='userInfo'
+        />
     </div>
 </template>
 
@@ -32,17 +38,31 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { FileResource } from '@/recources/FileResource';
 import { ConversationWebsocket } from '@/types/resources/websocket';
+import EditGroupModal from '@/views/chat/components/EditGroupModal.vue';
 
 const fileResource = new FileResource();
-@Component
+@Component({
+    components: { EditGroupModal },
+})
 export default class ChatInfo extends Vue {
     @Prop() isGroup!: boolean;
     @Prop() userInfo!: ConversationWebsocket;
 
     urlAvatar = '';
 
-    moveToUserPage(): void {
-        this.$router.push(`/user/${this.userInfo.id}`);
+    isShowGroupModal = false;
+
+
+    createGroupModal() {
+        this.isShowGroupModal = true;
+    }
+
+    chatAction(): void {
+        if (this.isGroup) {
+            this.createGroupModal()
+        } else {
+            this.$router.push(`/user/${this.userInfo.id}`);
+        }
     }
 
     async mounted(): Promise<void> {

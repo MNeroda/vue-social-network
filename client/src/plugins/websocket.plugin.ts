@@ -36,7 +36,8 @@ const wsPlugin = {
 
         Vue.$__set_websocket_token = function (token: string): void {
             if (token) {
-                socket = io('ws://localhost:5000', {
+                //todo перед продом стирать uri
+                socket = io('', {
                     auth: { token },
                 });
                 isAuth = true;

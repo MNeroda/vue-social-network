@@ -3,6 +3,8 @@ import store from '@/store';
 
 import firebase from 'firebase/app';
 import 'firebase/storage';
+import { generateId } from '@/modules/helpers/generateId';
+import { PhotoInfo } from '@/types/resources/photos';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyBQnBO4J-sFFjgzdx_JQJyxR-C7R7_IJCc',
@@ -58,5 +60,36 @@ export class FileResource extends BaseResource {
                 isHaveAvatar,
             },
         });
+    }
+
+    async uploadPhoto(file: File): Promise<void> {
+        if (!store.state.userId) {
+            throw new Error(
+                'Попытка загрузить фото у несуществуещего пользователя'
+            );
+        }
+        const id = generateId()
+        const blob = file.slice(0, file.size, 'image/jpg');
+        const newFile = new File([blob], `${id}.jpg`, { type: 'image/jpg' });
+        storage.ref(`${store.state.userId}/${id}.jpg`).put(newFile);
+        await this.addNewUserPhoto(id)
+    }
+
+    async addNewUserPhoto(id: string) {
+        return this.axios.get('add-new-user-photo', {
+            params: {id}
+        })
+    }
+
+    async getListPhotos(id: string): Promise<PhotoInfo[]> {
+        return this.axios.get('get-list-photo', {
+            params: {id}
+        }).then(res => res.data)
+    }
+
+    async getUserPhoto(userId: string, photoId: string): Promise<string> {
+        const ref = storage.ref(`${userId}/${photoId}.jpg`);
+        const url = await ref.getDownloadURL();
+        return url;
     }
 }

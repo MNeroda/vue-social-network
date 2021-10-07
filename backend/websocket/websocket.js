@@ -221,6 +221,17 @@ const createWebsocket = (server) => {
             //todo эмитить еще и друзей
         });
 
+        socket.on(
+            'UPDATE_GROUP',
+            async ({ groupName, groupId, friendsIds }) => {
+                const conversation = await Conversation.findById(groupId);
+                conversation.members.push(...friendsIds);
+                conversation.groupName = groupName;
+                await conversation.save()
+                io.emit('GROUP_UPDATED')
+            }
+        );
+
         socket.on('disconnect', async () => {
             await User.findOneAndUpdate(
                 { _id: userId },

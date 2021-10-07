@@ -23,6 +23,11 @@ export interface ConversationWebsocket {
     isHaveAvatar: boolean;
     linkTo: string;
     name: string;
+    members?: Array<{
+        id: string;
+        isHaveAvatar: boolean;
+        name: string;
+    }>;
 }
 
 export interface SerializeConversations {

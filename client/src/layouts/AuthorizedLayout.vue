@@ -1,24 +1,3 @@
-<!--
-
-        <v-row class="mt-0 auth-layout-content bg-light-grey" style='overflow: hidden; position: relative'>
-            <v-col cols="2" class="d-flex flex-column pt-0" style="gap: 15px">
-                <v-card
-                    class="sidebar-auth-layout ml-3"
-                    style="height: fit-content"
-                >
-                    <sidebar-list-items></sidebar-list-items>
-                </v-card>
-            </v-col>
-
-            <v-col cols="10" class="d-flex flex-column pt-0" style="gap: 15px">
-                <div class="main-content-auth-layout mt-0" style="width: 100%">
-                    <router-view :key='$route.path'></router-view>
-                </div>
-            </v-col>
-        </v-row>
-
--->
-
 <template>
     <div style="position: relative">
         <navbar />

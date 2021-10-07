@@ -47,19 +47,9 @@ const schema = new Schema({
     },
     photos: [
         {
-            id: {
-                type: String,
-            },
-            liked: [
-                {
-                    type: Types.ObjectId,
-                },
-            ],
-            date: {
-                type: Date,
-                default: Date.now(),
-            },
-        },
+            type: Types.ObjectId,
+            ref: 'Photo',
+        }
     ],
 });
 

@@ -2,7 +2,6 @@
     <v-dialog
         v-model="dialog"
         max-width="700"
-        transition="dialog-bottom-transition"
         persistent
     >
         <v-card style="padding: 30px; min-height: 450px">
