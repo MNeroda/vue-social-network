@@ -9,6 +9,7 @@ import {
     ChatPage,
     ProfilePage,
     FriendsPage,
+    TestPage
 } from '@/views';
 import store from '@/store';
 import { ActionTypes } from '@/store/types';
@@ -25,6 +26,7 @@ export enum RouteNames {
     CHAT_PAGE = 'CHAT_PAGE',
     PROFILE_PAGE = 'PROFILE_PAGE',
     FRIENDS_PAGE = 'FRIENDS_PAGE',
+    TEST_PAGE = 'TEST_PAGE'
 }
 
 type RoutesType = RouteConfig & {
@@ -113,6 +115,14 @@ const routes: Array<RoutesType> = [
             layout: 'unauthorized-layout',
         },
     },
+    {
+        path: '/test',
+        name: RouteNames.TEST_PAGE,
+        component: TestPage,
+        meta: {
+            layout: 'unauthorized-layout',
+        },
+    }
 ];
 
 const router = new VueRouter({
